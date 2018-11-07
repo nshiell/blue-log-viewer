@@ -6,7 +6,8 @@ from log_ui import Window
 from log_poller import Line_Format, File, Line_Parser, Processor_Thread
 
 line_format = Line_Format(
-    '^\[(?P<Timestamp>[^\]]+)\] \[(?P<Type>[^\]]+)\] \[(?P<PID>[^\]]+)\] (?P<Message>.*)$')
+    #  [some date]                [:error]            [pid - ignored] [client xxx.xxx.xxx.xxx] message to EOL
+    '^\[(?P<Timestamp>[^\]]+)\] \[(?P<Type>[^\]]+)\] \[(?:[^\]]+)\] \[client (?P<Client>[^\]]+)\] (?P<Message>.*)$')
 
 log_file = File(sys.argv[1])
 line_parser = Line_Parser(line_format)
