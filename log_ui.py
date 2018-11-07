@@ -23,11 +23,22 @@ class QTableView_Log(QTableView):
         ## works?????
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
+
         # bind cell click to a method reference
         #self.clicked.connect(QAbstractItemView.showSelection)
         #self.clicked.connect(QAbstractItemView.selectRow)
 
         self.setSortingEnabled(False)
+    def setColumsHeaderWidths(self):
+        header = self.horizontalHeader()
+        columnCount = header.count()
+        for column in range(columnCount):
+            if column != columnCount - 1:
+                header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
+                header.setSectionResizeMode(column, QHeaderView.Interactive)
+            else:
+                header.setSectionResizeMode(column, QHeaderView.Stretch)
+    
 
 class Window(QWidget):
     title = None
@@ -43,6 +54,8 @@ class Window(QWidget):
 
         self.table_view = QTableView_Log()
         self.table_view.setModel(self.table_model)
+        self.table_view.setColumsHeaderWidths()
+
         layout = QVBoxLayout(self)
         layout.addWidget(self.table_view)
         self.setLayout(layout)
