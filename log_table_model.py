@@ -10,69 +10,65 @@ class LogTableModel(QAbstractTableModel):
     keep the method names
     they are an integral part of the model
     """
-    thread = None
-    pid = None
+    log_data_processor = None
     parent = None
-    def __init__(self, parent, mylist, header, pid, *args):
+
+    def __init__(self, parent, log_data_processor, *args):
         QAbstractTableModel.__init__(self, parent, *args)
         self.parent = parent
-        self.pid = pid
-        self.thread = mylist
+        self.log_data_processor = log_data_processor
         lines = []
-        for line in mylist.parsed_lines:
+        for line in log_data_processor.parsed_lines:
             lines.append([v for k,v in line.items()])
 
-        self.mylist = lines
-        self.header = header
-        self.timer = QTimer()
+        self.parsed_lines = lines
+        self.header = self.log_data_processor.line_parser.line_format.fields
+        self._create_time()
         self.change_flag = True
+
+    def _create_time(self):
+        self.timer = QTimer()
         self.timer.timeout.connect(self.updateModel)
         self.timer.start(1000)
-        
-        # self.rowCheckStateMap = {}
 
-    def setDataList(self, mylist):
+    def _set_parsed_lines_from_processor_and_emit(self, log_data_processor):
         lines = []
-        for line in mylist.parsed_lines:
+        for line in log_data_processor.parsed_lines:
             lines.append([v for k,v in line.items()])
 
-        self.mylist = lines
+        self.parsed_lines = lines
         self.layoutAboutToBeChanged.emit()
         self.dataChanged.emit(
             self.createIndex(0, 0),
             self.createIndex(self.rowCount(0), self.columnCount(0))
         )
         self.layoutChanged.emit()
+
+    def setDataList(self, log_data_processor):
+        self._set_parsed_lines_from_processor_and_emit(log_data_processor)
 
     def updateModel(self):
-        lines = []
-        for line in self.thread.parsed_lines:
-            lines.append([v for k,v in line.items()])
-
-        self.mylist = lines
-        self.layoutAboutToBeChanged.emit()
-        self.dataChanged.emit(
-            self.createIndex(0, 0),
-            self.createIndex(self.rowCount(0), self.columnCount(0))
-        )
-        self.layoutChanged.emit()
+        self._set_parsed_lines_from_processor_and_emit(self.log_data_processor)
         self.parent.table_view.scrollToBottom()
 
     def rowCount(self, parent):
-        return len(self.mylist)
+        return len(self.parsed_lines)
 
     def columnCount(self, parent):
-        return len(self.mylist[0])
+        return len(self.log_data_processor.line_parser.line_format.fields)
 
     def data(self, index, role):
         if not index.isValid():
             return None
 
-        value = self.mylist[index.row()][index.column()]
+        value = self.parsed_lines[index.row()][index.column()]
 
         if role == Qt.BackgroundRole:
             if index.row() == 2:
                 return QColor(200, 255, 230)
+            if index.row() >= self.log_data_processor.log_file.old_lines:
+                return QColor(255, 220, 90)
+            
         elif role == Qt.EditRole:
             return value
         elif role == Qt.DisplayRole:

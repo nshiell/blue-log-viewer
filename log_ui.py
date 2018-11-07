@@ -32,14 +32,14 @@ class QTableView_Log(QTableView):
 class Window(QWidget):
     title = None
 
-    def __init__(self, dataList, header, pid, *args):
+    def __init__(self, log_data_processor, header, *args):
         QWidget.__init__(self, *args)
         self.title = Window_title()
-        self.title.path = 'sfgsdfg'
+        self.title.path = log_data_processor.log_file.path
         self.setGeometry(70, 150, 1326, 582)
         self.setWindowTitle(self.title.text)
 
-        self.table_model = LogTableModel(self, dataList, header, pid)
+        self.table_model = LogTableModel(self, log_data_processor)
 
         self.table_view = QTableView_Log()
         self.table_view.setModel(self.table_model)

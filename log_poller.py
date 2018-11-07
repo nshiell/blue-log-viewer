@@ -7,7 +7,7 @@ class File:
     uses "tail -f" for reading - so best use in a thread
     """
     path = None
-    pid = None
+    old_lines = 0
 
     def __init__(self, path):
         self.path = path
@@ -28,7 +28,7 @@ class File:
             stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         p = select.poll()
         p.register(f.stdout)
-        self.pid = f.pid
+        #self.pid = f.pid
 
         while True:
             if p.poll(1):
@@ -41,6 +41,7 @@ class File:
     def get_lines(self):
         for line in self.read_file():
             yield line
+            self.old_lines = self.old_lines + 1
         
         for line in self.tail_file():
             yield line
@@ -79,7 +80,7 @@ class Line_Format:
 
 
 
-class Line_Processor_Thread(threading.Thread):
+class Processor_Thread(threading.Thread):
     """
     This thread will create an expanding array of parsed_lines
     as they are yeild'ed from the log_file
