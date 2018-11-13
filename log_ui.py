@@ -71,11 +71,13 @@ class QTableView_Log(QTableView):
             else:
                 header.setSectionResizeMode(column, QHeaderView.Stretch)
 
-class Window(QWidget):
+class Window(QMainWindow):
     events = None
-
+    #keyPressed = QtCore.pyqtSignal(QtCore.QEvent)
+    keyPressed = QtCore.pyqtSignal(int)
     def __init__(self, log_data_processor, header, *args):
-        QWidget.__init__(self, *args)
+        #QWidget.__init__(self, *args)
+        super().__init__()
 
         self.title = Window_title()
         self.title.path = log_data_processor.log_file.path
@@ -90,10 +92,37 @@ class Window(QWidget):
         self.table_view.setModel(self.table_model)
         self.table_view.setColumsHeaderWidths()
 
-        layout = QVBoxLayout(self)
+        okButton = QPushButton("OK")
+        okButton1 = QPushButton("OK1")
+        
+        hbox = QHBoxLayout(layout)
+        hbox.addStretch(1)
+        hbox.addWidget(okButton)
+        #hbox.addWidget(okButton1)
+
+        centralwidget = QWidget()
+        layout = QVBoxLayout(centralwidget)
+        layout.addWidget(hbox)
         layout.addWidget(self.table_view)
-        self.setLayout(layout)
+        
+        self.setCentralWidget(centralwidget)
         self.table_view.scrollToBottom()
+        #self.keyPressed.connect(self.on_key)
+        #shift_tab = QShortcut(QtGui.QKeySequence('Ctrl+f'), self)
+        
+        #exitAct = QAction(QIcon('exit.png'), '&Exit', self)        
+        #exitAct.setShortcut('Ctrl+Q')
+        #exitAct.setStatusTip('Exit application')
+        #exitAct.triggered.connect(self.dddf)
+        
+        #menubar = self.menuBar()
+        #fileMenu = menubar.addMenu('&File')
+        #fileMenu.addAction(exitAct)
+        
+        #shift_tab.activated.connect(self.my_key_func)
+
+    #def my_key_func(self):
+    #    print('sdfg')
 
     def update_model(self, datalist, header):
         self.table_model2 = MyTableModel(self, dataList, header)
@@ -103,3 +132,9 @@ class Window(QWidget):
     def closeEvent(self, event):
         event.accept()
         self.events.window_close()
+
+    def dddf(self):
+        print('dfg')
+    #def keyReleaseEvent(self, event):
+    #    print ('fgsdf')
+    #    print (event.key())
