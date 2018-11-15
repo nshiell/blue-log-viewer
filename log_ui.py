@@ -34,18 +34,35 @@ class Line_QMessageBox(QMessageBox):
         self.setDetailedText(parsed_line[-1])
         self.setStandardButtons(QMessageBox.Cancel)
 
+        return self
+
 class Events:
     table_model = None
 
-    def __init__(self, table_model):
-        self.table_model = table_model
+    def __init__(self, window):
+        self.table_model = window.table_model
+        w = window.findChild
 
-    def table_double_click(self, modeIndex):
-        msg = Line_QMessageBox()
-        msg.set_line(
-            self.table_model.parsed_lines[modeIndex.row()],
-            modeIndex.row())
-        msg.exec_()
+        w(QPushButton, 'color').clicked.connect(lambda:
+            self.table_model.change_color()
+        )
+
+        w(QPushButton, 'tail').clicked.connect(lambda:
+            w(QPushButton, 'tail').setText(
+                'Tail ' + (
+                    'Stop' if self.table_model.toggle_tail() else 'Start'
+                )
+            )
+        )
+
+        w(QTableView).doubleClicked.connect(lambda modeIndex:
+            Line_QMessageBox()
+                .set_line(
+                    self.table_model.parsed_lines[modeIndex.row()],
+                    modeIndex.row()
+                )
+                .exec_()
+        )
 
     def window_close(self):
         os._exit(0)
@@ -58,7 +75,6 @@ class QTableView_Log(QTableView):
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
 
-        self.doubleClicked.connect(self.events.table_double_click)
         self.setSortingEnabled(False)
 
     def setColumsHeaderWidths(self):
@@ -73,10 +89,8 @@ class QTableView_Log(QTableView):
 
 class Window(QMainWindow):
     events = None
-    #keyPressed = QtCore.pyqtSignal(QtCore.QEvent)
     keyPressed = QtCore.pyqtSignal(int)
-    def __init__(self, log_data_processor, header, *args):
-        #QWidget.__init__(self, *args)
+    def __init__(self, log_data_processor, header, is_dark, *args):
         super().__init__()
 
         self.title = Window_title()
@@ -84,45 +98,33 @@ class Window(QMainWindow):
         self.setGeometry(70, 150, 1326, 582)
         self.setWindowTitle(self.title.text)
 
-        self.table_model = LogTableModel(self, log_data_processor)
-        
-        self.events = Events(self.table_model)
+        self.table_model = LogTableModel(self, log_data_processor, is_dark)
 
         self.table_view = QTableView_Log(self.events)
         self.table_view.setModel(self.table_model)
         self.table_view.setColumsHeaderWidths()
-
-        okButton = QPushButton("OK")
-        okButton1 = QPushButton("OK1")
-        
-        hbox = QHBoxLayout(layout)
-        hbox.addStretch(1)
-        hbox.addWidget(okButton)
-        #hbox.addWidget(okButton1)
-
-        centralwidget = QWidget()
-        layout = QVBoxLayout(centralwidget)
-        layout.addWidget(hbox)
-        layout.addWidget(self.table_view)
-        
-        self.setCentralWidget(centralwidget)
+        self._set_ui()
+        self.events = Events(self)
         self.table_view.scrollToBottom()
-        #self.keyPressed.connect(self.on_key)
-        #shift_tab = QShortcut(QtGui.QKeySequence('Ctrl+f'), self)
-        
-        #exitAct = QAction(QIcon('exit.png'), '&Exit', self)        
-        #exitAct.setShortcut('Ctrl+Q')
-        #exitAct.setStatusTip('Exit application')
-        #exitAct.triggered.connect(self.dddf)
-        
-        #menubar = self.menuBar()
-        #fileMenu = menubar.addMenu('&File')
-        #fileMenu.addAction(exitAct)
-        
-        #shift_tab.activated.connect(self.my_key_func)
 
-    #def my_key_func(self):
-    #    print('sdfg')
+    def _set_ui(self):
+        centralwidget = QWidget()
+
+        colorChangeButton = QPushButton("Change Colour")
+        colorChangeButton.setObjectName('color')
+
+        tailButton = QPushButton("Tail Stop")
+        tailButton.setObjectName('tail')
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(colorChangeButton)
+        hbox.addWidget(tailButton)
+
+        vbox = QVBoxLayout(centralwidget)
+        vbox.addLayout(hbox)
+        vbox.addWidget(self.table_view)
+
+        self.setCentralWidget(centralwidget)
 
     def update_model(self, datalist, header):
         self.table_model2 = MyTableModel(self, dataList, header)
@@ -132,9 +134,3 @@ class Window(QMainWindow):
     def closeEvent(self, event):
         event.accept()
         self.events.window_close()
-
-    def dddf(self):
-        print('dfg')
-    #def keyReleaseEvent(self, event):
-    #    print ('fgsdf')
-    #    print (event.key())
