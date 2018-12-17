@@ -1,3 +1,4 @@
+# Copyright (C) 2018  Nicholas Shiell
 from time import time
 import threading, re, time, subprocess, select
 

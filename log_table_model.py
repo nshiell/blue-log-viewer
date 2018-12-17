@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 # Character Encoding: UTF-8
 #coding=utf-8
+# Copyright (C) 2018  Nicholas Shiell
 
 from PyQt5.QtCore import QAbstractTableModel, QTimer, Qt
 from PyQt5.QtGui import QColor
