@@ -2,6 +2,18 @@
 from time import time
 import threading, re, time, subprocess, select
 
+class File_Factory:
+    file_dialog = None
+
+    def __init__(self, file_dialog):
+        self.file_dialog = file_dialog
+
+    def create_instance(self, cli_path):
+        if not cli_path:
+            return File(self.file_dialog.get_valid_file_name())
+
+        return File(cli_path)
+
 class File:
     """
     Represents a file that can be parsed - line by line

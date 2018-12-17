@@ -20,8 +20,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 from log_table_model import LogTableModel
-from log_ui import Window
-from log_poller import Line_Format, File, Line_Parser, Processor_Thread
+from log_ui import Window, File_Dialog
+from log_poller import Line_Format, File_Factory, Line_Parser, Processor_Thread
 from argparse import ArgumentParser
 
 class QApplication_Apache_Log_viewer(QApplication):
@@ -36,7 +36,7 @@ class QApplication_Apache_Log_viewer(QApplication):
             #  [some date]                [:error]            [pid - ignored] [client xxx.xxx.xxx.xxx] message to EOL
             '^\[(?P<Timestamp>[^\]]+)\] \[(?P<Type>[^\]]+)\] \[(?:[^\]]+)\] \[client (?P<Client>[^\]]+)\] (?P<Message>.*)$')
 
-        log_file = File(self.args.file)
+        log_file = File_Factory(File_Dialog()).create_instance(self.args.file)
         line_parser = Line_Parser(line_format)
         log_data_processor = Processor_Thread(log_file, line_parser)
         log_data_processor.start()

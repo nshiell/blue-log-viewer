@@ -8,6 +8,17 @@ import os, signal
 import log_poller
 import sys
 
+class File_Dialog():
+    default_path = '/var/log'
+
+    def get_valid_file_name(self):
+        path_parts = QFileDialog.getOpenFileName(None, "Select log file", self.default_path)
+        path = path_parts[0]
+        if not path or not os.path.isfile(path):
+            os._exit(0)
+
+        return path
+
 class Window_title:
     path = None
 
