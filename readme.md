@@ -1,10 +1,10 @@
 # A Simple Application To View Apache's error.log file
 
 ## To Run:
-`./apache-log-viewer.py /var/www/log/apache2/error.log`
+`./apache-log-viewer.py /var/log/apache2/error.log`
 
 *If you are using a dark theme:*
-`./apache-log-viewer.py /var/www/log/apache2/error.log --is-dark`
+`./apache-log-viewer.py /var/log/apache2/error.log --is-dark`
 
 
 ## If you see something resembling the following:
