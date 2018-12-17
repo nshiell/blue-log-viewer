@@ -7,7 +7,7 @@
 `./apache-log-viewer.py /var/www/log/apache2/log/apache2/error.log --is-dark`
 
 
-## If you see something like the following:
+## If you see something resembling the following:
 ```
 Traceback (most recent call last):
   File "./apache-log-viewer/apache-log-viewer.py", line 3, in <module>
