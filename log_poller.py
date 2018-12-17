@@ -21,6 +21,7 @@ class File:
     """
     path = None
     old_lines = 0
+    proc = None
 
     def __init__(self, path):
         self.path = path
@@ -37,11 +38,10 @@ class File:
         fh.close()
 
     def tail_file(self):
-        f = subprocess.Popen(['tail', '-F', '-n 0', self.path],
+        self.proc = subprocess.Popen(['tail', '-F', '-n 0', self.path],
             stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         p = select.poll()
-        p.register(f.stdout)
-        #self.pid = f.pid
+        p.register(self.proc.stdout)
 
         while True:
             if p.poll(1):
@@ -58,6 +58,9 @@ class File:
         
         for line in self.tail_file():
             yield line
+
+    def tail_kill(self):
+        self.proc.kill()
 
 class Line_Parser:
     """

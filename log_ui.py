@@ -77,6 +77,7 @@ class Events:
         )
 
     def window_close(self):
+        self.table_model.log_data_processor.log_file.tail_kill()
         os._exit(0)
 
 class QTableView_Log(QTableView):
