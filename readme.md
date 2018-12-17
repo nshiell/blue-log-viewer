@@ -7,7 +7,7 @@
 `./apache-log-viewer.py /var/www/log/apache2/log/apache2/error.log --is-dark`
 
 
-## If you see something loke the following:
+## If you see something like the following:
 ```
 Traceback (most recent call last):
   File "./apache-log-viewer/apache-log-viewer.py", line 3, in <module>
@@ -15,7 +15,9 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'PyQt5'
 ```
 
-On Debian/Ubuntu/XUbuntu/Kubuntu/KDE Neon run:
+then on Debian/Ubuntu/XUbuntu/Kubuntu/KDE Neon run:
 `sudo apt-get install python3-pyqt5`
 
 ...then try again.
+
+*This program is not related to Apache or the Apache Software Foundation in any way*
