@@ -4,7 +4,7 @@
 `./apache-log-viewer.py /var/www/log/apache2/error.log`
 
 *If you are using a dark theme:*
-`./apache-log-viewer.py /var/www/log/apache2/log/apache2/error.log --is-dark`
+`./apache-log-viewer.py /var/www/log/apache2/error.log --is-dark`
 
 
 ## If you see something resembling the following:
