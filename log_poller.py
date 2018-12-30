@@ -2,6 +2,9 @@
 from time import time
 import threading, re, time, subprocess, select
 
+# @todo remove reference to QT stuff from this file
+from PyQt5.QtCore import QThread
+
 class File_Factory:
     file_dialog = None
 
@@ -45,7 +48,7 @@ class File:
 
         while True:
             if p.poll(1):
-                line = f.stdout.readline().decode("utf-8").replace('\n', '')
+                line = self.proc.stdout.readline().decode("utf-8").replace('\n', '')
                 if line:
                     yield line
             time.sleep(1)
@@ -94,9 +97,7 @@ class Line_Format:
         fields = re.findall('\?P\<(.*?)\>', regex)
         self.fields = [field.replace('_', ' ') for field in fields]
 
-
-
-class Processor_Thread(threading.Thread):
+class Processor_Thread(QThread):
     """
     This thread will create an expanding array of parsed_lines
     as they are yeild'ed from the log_file

@@ -8,11 +8,16 @@ import os, signal
 import log_poller
 import sys
 
-class File_Dialog():
+class File_Dialog:
     default_path = '/var/log'
 
-    def get_valid_file_name(self):
-        path_parts = QFileDialog.getOpenFileName(None, "Select log file", self.default_path)
+    def get_valid_file_name(self, win):
+        path_parts = QFileDialog.getOpenFileName(
+            win,
+            "Select log file",
+            self.default_path
+        )
+
         path = path_parts[0]
         if not path or not os.path.isfile(path):
             os._exit(0)
@@ -102,16 +107,28 @@ class QTableView_Log(QTableView):
 
 class Window(QMainWindow):
     events = None
-    keyPressed = QtCore.pyqtSignal(int)
-    def __init__(self, log_data_processor, header, is_dark, *args):
+    def __init__(self, is_dark, file_path, *args):
         super().__init__()
 
-        self.title = Window_title()
-        self.title.path = log_data_processor.log_file.path
         self.setGeometry(70, 150, 1326, 582)
+
+        if not file_path:
+            file_path = File_Dialog().get_valid_file_name(self)
+
+        self.title = Window_title()
+        self.title.path = file_path
         self.setWindowTitle(self.title.text)
 
-        self.table_model = LogTableModel(self, log_data_processor, is_dark)
+        log_file = log_poller.File(file_path)
+
+        line_format = log_poller.Line_Format(
+            #  [some date]                [:error]            [pid - ignored] [client xxx.xxx.xxx.xxx] message to EOL
+            '^\[(?P<Timestamp>[^\]]+)\] \[(?P<Type>[^\]]+)\] \[(?:[^\]]+)\] \[client (?P<Client>[^\]]+)\] (?P<Message>.*)$')
+
+        line_parser = log_poller.Line_Parser(line_format)
+        self.log_data_processor = log_poller.Processor_Thread(log_file, line_parser)
+
+        self.table_model = LogTableModel(self, self.log_data_processor, is_dark)
 
         self.table_view = QTableView_Log(self.events)
         self.table_view.setModel(self.table_model)
@@ -119,6 +136,13 @@ class Window(QMainWindow):
         self._set_ui()
         self.events = Events(self)
         self.table_view.scrollToBottom()
+
+    def start_polling(self):
+        """
+        Start reading the log onto the screen
+        MUST be called after Window.show()
+        """
+        self.log_data_processor.start()
 
     def _set_ui(self):
         centralwidget = QWidget()
