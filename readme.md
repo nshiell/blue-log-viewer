@@ -1,5 +1,7 @@
 # A Simple Application To View Apache's error.log file
 
+*This program is not related to Apache or the Apache Software Foundation in any way*
+
 ## To Run:
 `./apache-log-viewer.py /var/log/apache2/error.log`
 
@@ -20,4 +22,7 @@ then on Debian/Ubuntu/XUbuntu/Kubuntu/KDE Neon run:
 
 ...then try again.
 
-*This program is not related to Apache or the Apache Software Foundation in any way*
+
+If you see something like:
+```Gtk-Message: 20:57:58.431: GtkDialog mapped without a transient parent. This is discouraged.```
+Don't worry it's just GTK & QT not playing well together (I think) - should still work fine though
