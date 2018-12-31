@@ -5,12 +5,12 @@
 ## To Run:
 `./apache-log-viewer.py /var/log/apache2/error.log`
 
-###### Dark Themes:
+##### Dark Themes:
 *If you are using a dark theme:*
 `./apache-log-viewer.py /var/log/apache2/error.log --is-dark`
 
 
-## If you see something resembling the following:
+#### If you see something resembling the following:
 ```
 Traceback (most recent call last):
   File "./apache-log-viewer/apache-log-viewer.py", line 3, in <module>
@@ -18,10 +18,10 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'PyQt5'
 ```
 
-###### then on Debian/Ubuntu/XUbuntu/Kubuntu/KDE Neon run:
+##### then on Debian / Ubuntu / XUbuntu / Kubuntu / KDE Neon run:
 `sudo apt-get install python3-pyqt5`
 
-###### or on Fedora (Redhat RPM based) use pip3 instead:
+##### or on Fedora (Redhat RPM based) use pip3 instead:
 ```sudo pip3 install pyqt5```
 
 
