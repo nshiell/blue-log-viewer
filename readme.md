@@ -1,5 +1,7 @@
 # A Simple Application To View Apache's error.log file
 
+![Log Viewer - Main Window](https://nshiell.com/img/log-viewer/product.jpg)
+
 *This program is not related to Apache or the Apache Software Foundation in any way*
 
 ## To Run:
