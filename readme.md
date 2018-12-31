@@ -17,10 +17,10 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'PyQt5'
 ```
 
-then on Debian/Ubuntu/XUbuntu/Kubuntu/KDE Neon run:
+### then on Debian/Ubuntu/XUbuntu/Kubuntu/KDE Neon run:
 `sudo apt-get install python3-pyqt5`
 
-or on Fedora (Redhat RPM based) use pip3 instead:
+### or on Fedora (Redhat RPM based) use pip3 instead:
 ```sudo pip3 install pyqt5```
 
 
@@ -28,9 +28,12 @@ or on Fedora (Redhat RPM based) use pip3 instead:
 
 
 If you see something like:
-```Gtk-Message: 20:57:58.431: GtkDialog mapped without a transient parent. This is discouraged.```
+```
+Gtk-Message: 20:57:58.431: GtkDialog mapped without a transient parent. This is discouraged.
+```
 or
-```qt5ct: using qt5ct Plugin```
-or
-```Warning```
-Don't worry it should still work fine though
+```
+qt5ct: using qt5ct Plugin
+```
+
+Don't worry it should still work fine
