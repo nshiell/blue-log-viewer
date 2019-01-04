@@ -20,7 +20,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 from log_table_model import LogTableModel
-from log_ui import Window, File_Dialog
+from log_ui import Window, File_Dialog, Window_Factory
 from log_poller import Line_Format, File, Line_Parser, Processor_Thread
 from argparse import ArgumentParser
 import os
@@ -47,7 +47,9 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
     args = parser.parse_args()
-    w = Window(args.is_dark, args.file)
-    w.show()
-    w.start_polling()
+
+    window = Window_Factory().create(args)
+    window.show()
+    window.start_polling()
+
     app.exec_()

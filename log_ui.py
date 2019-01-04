@@ -27,8 +27,10 @@ class File_Dialog:
 class Window_title:
     path = None
 
-    @property
-    def text(self):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
         return '%s - Log Viewer' % self.path
 
 class Line_QMessageBox(QMessageBox):
@@ -54,20 +56,22 @@ class Line_QMessageBox(QMessageBox):
         return self
 
 class Events:
-    table_model = None
+    window = None
 
     def __init__(self, window):
-        self.table_model = window.table_model
+        self.window = window
+
         w = window.findChild
+        table_model = window.table_view.table_model
 
         w(QPushButton, 'color').clicked.connect(lambda:
-            self.table_model.change_color()
+            table_model.change_color()
         )
 
         w(QPushButton, 'tail').clicked.connect(lambda:
             w(QPushButton, 'tail').setText(
                 'Tail ' + (
-                    'Stop' if self.table_model.toggle_tail() else 'Start'
+                    'Stop' if table_model.toggle_tail() else 'Start'
                 )
             )
         )
@@ -75,20 +79,22 @@ class Events:
         w(QTableView).doubleClicked.connect(lambda modeIndex:
             Line_QMessageBox()
                 .set_line(
-                    self.table_model.parsed_lines[modeIndex.row()],
+                    table_model.parsed_lines[modeIndex.row()],
                     modeIndex.row()
                 )
                 .exec_()
         )
 
     def window_close(self):
-        self.table_model.log_data_processor.log_file.tail_kill()
+        self.window.table_view.table_model.log_data_processor.log_file.tail_kill()
         os._exit(0)
 
+
 class QTableView_Log(QTableView):
-    def __init__(self, events):
+    table_model = None
+
+    def __init__(self):
         super().__init__()
-        self.events = events
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -105,19 +111,15 @@ class QTableView_Log(QTableView):
             else:
                 header.setSectionResizeMode(column, QHeaderView.Stretch)
 
-class Window(QMainWindow):
-    events = None
-    def __init__(self, is_dark, file_path, *args):
-        super().__init__()
+    def setModel(self, model):
+        self.table_model = model
+        return super().setModel(model)
 
-        self.setGeometry(70, 150, 1326, 582)
-
+class Table_Model_Factory:
+    def create(self, window, args):
+        file_path = args.file
         if not file_path:
-            file_path = File_Dialog().get_valid_file_name(self)
-
-        self.title = Window_title()
-        self.title.path = file_path
-        self.setWindowTitle(self.title.text)
+            file_path = File_Dialog().get_valid_file_name(window)
 
         log_file = log_poller.File(file_path)
 
@@ -126,27 +128,47 @@ class Window(QMainWindow):
             '^\[(?P<Timestamp>[^\]]+)\] \[(?P<Type>[^\]]+)\] \[(?:[^\]]+)\] \[client (?P<Client>[^\]]+)\] (?P<Message>.*)$')
 
         line_parser = log_poller.Line_Parser(line_format)
-        self.log_data_processor = log_poller.Processor_Thread(log_file, line_parser)
+        log_data_processor = log_poller.Processor_Thread(log_file, line_parser)
+        return LogTableModel(window, log_data_processor, args.is_dark)
 
-        self.table_model = LogTableModel(self, self.log_data_processor, is_dark)
 
-        self.table_view = QTableView_Log(self.events)
-        self.table_view.setModel(self.table_model)
+class Window_Factory:
+    def create(self, args):
+        window = Window(Table_Model_Factory(), args)
+
+        return window
+
+
+class Window(QMainWindow):
+    events = None
+    table_view = None
+
+    def __init__(self, table_model_factory, parsed_args, *args):
+        super().__init__()
+
+        table_model = table_model_factory.create(self, parsed_args)
+
+        self.table_view = QTableView_Log()
+        self.table_view.setModel(table_model)
         self.table_view.setColumsHeaderWidths()
         self._set_ui()
         self.events = Events(self)
-        self.table_view.scrollToBottom()
 
     def start_polling(self):
         """
         Start reading the log onto the screen
         MUST be called after Window.show()
         """
-        self.log_data_processor.start()
+        self.table_view.table_model.log_data_processor.start()
 
     def _set_ui(self):
         centralwidget = QWidget()
 
+        self.setWindowTitle(str(Window_title(
+            self.table_view.table_model.log_data_processor.log_file.path
+        )))
+
+        self.setGeometry(70, 150, 1326, 582)
         colorChangeButton = QPushButton("Change Colour")
         colorChangeButton.setObjectName('color')
 
@@ -162,11 +184,6 @@ class Window(QMainWindow):
         vbox.addWidget(self.table_view)
 
         self.setCentralWidget(centralwidget)
-
-    def update_model(self, datalist, header):
-        self.table_model2 = MyTableModel(self, dataList, header)
-        self.table_view.setModel(self.table_model2)
-        self.table_view.update()
 
     def closeEvent(self, event):
         event.accept()
