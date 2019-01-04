@@ -5,17 +5,17 @@
 *This program is not related to Apache or the Apache Software Foundation in any way*
 
 ## To Run:
-`./apache-log-viewer.py /var/log/apache2/error.log`
+`./blue-log-viewer.py /var/log/apache2/error.log`
 
 ##### Dark Themes:
 *If you are using a dark theme:*
-`./apache-log-viewer.py /var/log/apache2/error.log --is-dark`
+`./blue-log-viewer.py /var/log/apache2/error.log --is-dark`
 
 
 #### If you see something resembling the following:
 ```
 Traceback (most recent call last):
-  File "./apache-log-viewer/apache-log-viewer.py", line 3, in <module>
+  File "./blue-log-viewer.py", line 3, in <module>
     from PyQt5.QtWidgets import QApplication
 ModuleNotFoundError: No module named 'PyQt5'
 ```
