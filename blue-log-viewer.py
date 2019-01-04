@@ -2,7 +2,7 @@
 """
     Apache Log Viewer - View Apache's Log in a GUI
     This program is not related to Apache or the Apache Software Foundation in any way
-    Copyright (C) 2018  Nicholas Shiell
+    Copyright (C) 2019  Nicholas Shiell
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

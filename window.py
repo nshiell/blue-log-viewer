@@ -1,4 +1,4 @@
-# Copyright (C) 2018  Nicholas Shiell
+# Copyright (C) 2019  Nicholas Shiell
 from PyQt5.QtWidgets import *
 
 
