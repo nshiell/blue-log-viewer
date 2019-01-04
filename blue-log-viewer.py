@@ -19,11 +19,9 @@
 """
 import sys
 from PyQt5.QtWidgets import QApplication
-from log_table_model import LogTableModel
-from log_ui import Window, File_Dialog, Window_Factory
-from log_poller import Line_Format, File, Line_Parser, Processor_Thread
+from log_ui import Window_Factory
 from argparse import ArgumentParser
-import os
+from log_poller import Line_Format
 
 if __name__ == '__main__':
     parser = ArgumentParser(
@@ -48,7 +46,11 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     args = parser.parse_args()
 
-    window = Window_Factory().create(args)
+    line_format = Line_Format(
+        #  [some date]                [:error]            [pid - ignored] [client xxx.xxx.xxx.xxx] message to EOL
+        '^\[(?P<Timestamp>[^\]]+)\] \[(?P<Type>[^\]]+)\] \[(?:[^\]]+)\] \[client (?P<Client>[^\]]+)\] (?P<Message>.*)$')
+
+    window = Window_Factory().create(line_format, args)
     window.show()
     window.start_polling()
 

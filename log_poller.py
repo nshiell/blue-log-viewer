@@ -5,17 +5,6 @@ import threading, re, time, subprocess, select
 # @todo remove reference to QT stuff from this file
 from PyQt5.QtCore import QThread
 
-class File_Factory:
-    file_dialog = None
-
-    def __init__(self, file_dialog):
-        self.file_dialog = file_dialog
-
-    def create_instance(self, cli_path):
-        if not cli_path:
-            return File(self.file_dialog.get_valid_file_name())
-
-        return File(cli_path)
 
 class File:
     """
@@ -48,7 +37,13 @@ class File:
 
         while True:
             if p.poll(1):
-                line = self.proc.stdout.readline().decode("utf-8").replace('\n', '')
+                line = (self
+                    .proc
+                    .stdout
+                    .readline()
+                    .decode("utf-8")
+                    .replace('\n', '')
+                )
                 if line:
                     yield line
             time.sleep(1)
@@ -64,6 +59,7 @@ class File:
 
     def tail_kill(self):
         self.proc.kill()
+
 
 class Line_Parser:
     """
@@ -84,6 +80,7 @@ class Line_Parser:
         line_wrapped[self.line_format.fields[0]] = line
         return line_wrapped
 
+
 class Line_Format:
     """
     Represents line headings and regex
@@ -96,6 +93,7 @@ class Line_Format:
 
         fields = re.findall('\?P\<(.*?)\>', regex)
         self.fields = [field.replace('_', ' ') for field in fields]
+
 
 class Processor_Thread(QThread):
     """
