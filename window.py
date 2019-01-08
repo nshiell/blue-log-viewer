@@ -9,7 +9,7 @@ class Window_title:
         self.path = path
 
     def __str__(self):
-        return '%s - Log Viewer' % self.path
+        return '%s - Blue Log Viewer' % self.path
 
 
 class QTableView_Log(QTableView):

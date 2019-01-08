@@ -40,6 +40,21 @@ class Line_QMessageBox(QMessageBox):
 
         return self
 
+
+class Bad_File_Dialog():
+    box = None
+
+    def __init__(self, path, reason):
+        box = QMessageBox()
+        box.setWindowTitle('Error - Blue Log Viewer')
+        box.setIcon(QMessageBox.Critical)
+        box.setText("Can't open: %s" % (path))
+        box.setInformativeText(reason)
+        self.box = box
+
+    def show(self):
+        self.box.exec_()
+
 class Events:
     """
     Bindings for the Window class
@@ -92,19 +107,28 @@ class Events:
         os._exit(0)
 
 
+
+
 class File_Dialog:
     default_path = '/var/log'
 
-    def get_valid_file_name(self, win):
-        path_parts = QFileDialog.getOpenFileName(
-            win,
-            "Select log file",
-            self.default_path
-        )
+    def get_valid_file_name(self, win, path):
+        if not path:
+            path_parts = QFileDialog.getOpenFileName(
+                win,
+                "Select log file",
+                self.default_path
+            )
 
-        path = path_parts[0]
-        if not path or not os.path.isfile(path):
-            os._exit(0)
+            path = path_parts[0]
+            if not path or not os.path.isfile(path):
+                os._exit(1)
+
+        try:
+            open(path)
+        except IOError as e:
+            Bad_File_Dialog(path, e.__class__.__name__).show()
+            os._exit(1)
 
         return path
 
@@ -130,11 +154,8 @@ class Table_Model_Factory:
         Creates a LogTableModel and injects a data model into it
         """
 
-        # First get a VALID path
         # - it needs the window in case it needs to show a dialog
-        file_path = args.file
-        if not file_path:
-            file_path = File_Dialog().get_valid_file_name(window)
+        file_path = File_Dialog().get_valid_file_name(window, args.file)
 
         # Create a file instance, and a parser and then
         # give both to the processor thread
