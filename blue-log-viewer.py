@@ -35,14 +35,6 @@ if __name__ == '__main__':
         nargs='?'
     )
 
-    parser.add_argument(
-        '--is-dark',
-        action='store_const',
-        required=False,
-        const=True,
-        help='Whether to use dark colours (for dark themes)'
-    )
-
     app = QApplication(sys.argv)
     args = parser.parse_args()
 

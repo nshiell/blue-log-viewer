@@ -7,11 +7,6 @@
 ## To Run:
 `./blue-log-viewer.py /var/log/apache2/error.log`
 
-##### Dark Themes:
-*If you are using a dark theme:*
-`./blue-log-viewer.py /var/log/apache2/error.log --is-dark`
-
-
 #### If you see something resembling the following:
 ```
 Traceback (most recent call last):
