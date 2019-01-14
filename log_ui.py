@@ -6,7 +6,6 @@ from log_table_model import LogTableModel
 import os
 import log_poller
 
-
 from window import Window
 
 class Line_QMessageBox(QMessageBox):
@@ -108,7 +107,6 @@ class Events:
 
 
 
-
 class File_Dialog:
     default_path = '/var/log'
 
@@ -132,6 +130,19 @@ class File_Dialog:
 
         return path
 
+class Is_Dark_Theme_Detector:
+    """
+    Simple class that takes a window and works out idf this is a dark theme
+    """
+
+    def detect_is_dark_from_window(self, window):
+        """
+        Returns true if the window's BG color is more dark than light
+        """
+        color = window.palette().color(QPalette.Background)
+        average = (color.red() + color.green() + color.blue()) / 3
+
+        return average <= 128
 
 class Table_Model_Factory:
     """
@@ -145,9 +156,11 @@ class Table_Model_Factory:
     as the window doesn't care how data is parsed
     """
     line_format = None
+    is_dark_theme_detector = None
 
-    def __init__(self, line_format):
+    def __init__(self, line_format, is_dark_theme_detector):
         self.line_format = line_format
+        self.is_dark_theme_detector = is_dark_theme_detector
 
     def create(self, window, args):
         """
@@ -164,7 +177,12 @@ class Table_Model_Factory:
 
         line_parser = log_poller.Line_Parser(self.line_format)
         log_data_processor = log_poller.Processor_Thread(log_file, line_parser)
-        return LogTableModel(window, log_data_processor, args.is_dark)
+
+        return LogTableModel(
+            window,
+            log_data_processor,
+            self.is_dark_theme_detector.detect_is_dark_from_window(window)
+        )
 
 
 class Events_Factory:
@@ -175,7 +193,7 @@ class Events_Factory:
 class Window_Factory:
     def create(self, line_format, args):
         return Window(
-            Table_Model_Factory(line_format),
+            Table_Model_Factory(line_format, Is_Dark_Theme_Detector()),
             Events_Factory(),
             args
         )
