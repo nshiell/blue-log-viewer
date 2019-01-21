@@ -1,6 +1,6 @@
 # Copyright (C) 2019  Nicholas Shiell
 from PyQt5.QtWidgets import *
-
+from PyQt5.QtCore import Qt
 
 class Window_title:
     path = None
@@ -35,6 +35,9 @@ class QTableView_Log(QTableView):
         # and everything should be chromologically ordered
         # This isn't an interactive analyser, just a read-only log view
         self.setSortingEnabled(False)
+
+        # Disable scrollbars so it will be loocked to the bottom (tailed)
+        self.verticalScrollBar().setDisabled(True)
 
     def setColumsHeaderWidths(self):
         """
@@ -118,19 +121,20 @@ class Window(QMainWindow):
         self.setWindowTitle(str(Window_title(
             self.table_view.table_model.log_data_processor.log_file.path
         )))
-
         # Todo - think about storing this in a config somehow
         self.setGeometry(70, 150, 1326, 582)
         # English GB spelling (no I18N for now)
         colorChangeButton = QPushButton("Change Colour")
         colorChangeButton.setObjectName('color')
 
-        tailButton = QPushButton("Tail Stop")
-        tailButton.setObjectName('tail')
+        tailCheckBox = QCheckBox("Tail bottom of log file")
+        tailCheckBox.setObjectName('tail')
+        tailCheckBox.setLayoutDirection(Qt.RightToLeft)
+        tailCheckBox.setChecked(True)
 
         hbox = QHBoxLayout()
         hbox.addWidget(colorChangeButton)
-        hbox.addWidget(tailButton)
+        hbox.addWidget(tailCheckBox)
 
         vbox = QVBoxLayout(centralwidget)
         vbox.addLayout(hbox)

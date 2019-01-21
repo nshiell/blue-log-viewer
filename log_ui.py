@@ -73,11 +73,9 @@ class Events:
             table_model.change_color()
         )
 
-        w(QPushButton, 'tail').clicked.connect(lambda:
-            w(QPushButton, 'tail').setText(
-                'Tail ' + (
-                    'Stop' if table_model.toggle_tail() else 'Start'
-                )
+        w(QCheckBox, 'tail').clicked.connect(lambda:
+            window.table_view.verticalScrollBar().setDisabled(
+                table_model.toggle_tail()
             )
         )
 
