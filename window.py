@@ -1,6 +1,7 @@
 # Copyright (C) 2019  Nicholas Shiell
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QIcon
 
 class Window_title:
     path = None
@@ -123,22 +124,31 @@ class Window(QMainWindow):
         )))
         # Todo - think about storing this in a config somehow
         self.setGeometry(70, 150, 1326, 582)
+
         # English GB spelling (no I18N for now)
-        colorChangeButton = QPushButton("Change Colour")
-        colorChangeButton.setObjectName('color')
+        color_change_button = QPushButton("Change the colour")
+        color_change_button.setObjectName('color')
+
+        current_color_label = QLabel('This is the colour of new log entries')
+        current_color_label.setAlignment(Qt.AlignVCenter)
+        current_color_label.setObjectName('current_color')
 
         tailCheckBox = QCheckBox("Tail bottom of log file")
         tailCheckBox.setObjectName('tail')
         tailCheckBox.setLayoutDirection(Qt.RightToLeft)
         tailCheckBox.setChecked(True)
 
-        hbox = QHBoxLayout()
-        hbox.addWidget(colorChangeButton)
-        hbox.addWidget(tailCheckBox)
-
         vbox = QVBoxLayout(centralwidget)
-        vbox.addLayout(hbox)
         vbox.addWidget(self.table_view)
+
+        self.statusBar().addWidget(color_change_button)
+        self.statusBar().addWidget(current_color_label)
+
+        hint_label = QLabel('Double click on an entry to view details')
+        hint_label.setStyleSheet("font-style: italic; font-size: 9px")
+        self.statusBar().addPermanentWidget(hint_label)
+        self.statusBar().addPermanentWidget(tailCheckBox)
+
 
         self.setCentralWidget(centralwidget)
 

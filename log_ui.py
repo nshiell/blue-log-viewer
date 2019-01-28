@@ -54,6 +54,58 @@ class Bad_File_Dialog():
     def show(self):
         self.box.exec_()
 
+class Window_color_Changer:
+    table_model = None
+    current_color_label = None
+    color_button = None
+
+    def __init__(self, table_model, current_color_label, color_button):
+        self.table_model = table_model
+        self.current_color_label = current_color_label
+        self.color_button = color_button
+
+    def get_border_color(self, color, is_dark, strength):
+        if is_dark:
+            return QColor(
+                color.red() + strength,
+                color.green() + strength,
+                color.blue() + strength
+            )
+
+        return QColor(
+            color.red() - strength,
+            color.green() - strength,
+            color.blue() - strength
+        )
+
+    def update_ui(self):
+        color = self.table_model.get_color()
+        highlight_color_low = self.get_border_color(
+            color,
+            self.table_model.is_dark,
+            15
+        )
+
+        highlight_color_high = self.get_border_color(
+            color,
+            self.table_model.is_dark,
+            80
+        )
+
+        self.current_color_label.setStyleSheet("""
+            background-color: %s;
+            border: 1px solid %s;
+            color: %s;
+            padding: 0 40px""" % (
+                color.name(),
+                highlight_color_low.name(),
+                highlight_color_high.name())
+        )
+
+    def change_and_update_ui(self):
+        self.table_model.change_color()
+        self.update_ui()
+
 class Events:
     """
     Bindings for the Window class
@@ -69,8 +121,19 @@ class Events:
         w = window.findChild
         table_model = window.table_view.table_model
 
+        window_color_changer = Window_color_Changer(
+            table_model,
+            w(QLabel, 'current_color'),
+            w(QPushButton, 'color')
+        )
+
+        window_color_changer.update_ui()
+
+        self.bind(w, table_model, window_color_changer)
+
+    def bind(self, w, table_model, window_color_changer):
         w(QPushButton, 'color').clicked.connect(lambda:
-            table_model.change_color()
+            window_color_changer.change_and_update_ui()
         )
 
         w(QCheckBox, 'tail').clicked.connect(lambda:

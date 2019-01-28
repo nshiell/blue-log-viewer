@@ -11,26 +11,31 @@ class Color_list:
     Represents the ordered set of background colors
     Will invert the colors - needed for dark themes
     """
-    color_list = [
-        # Redish
-        QColor(255, 230, 190),
-        # Greenish
-        QColor(190, 255, 230),
-        # Blueish
-        QColor(230, 190, 255)
-    ]
+    color_list = None
 
     def __init__(self, is_dark=False):
-        # Dark theme - then flip the color values
         if is_dark:
-            color_list = []
-            for color in self.color_list:
-                color_list.append(QColor(
-                    255 - color.red(),
-                    255 - color.green(),
-                    255 - color.blue()
-                ))
-            self.color_list = color_list
+            self.color_list = [
+                # Blueish
+                QColor(0, 40, 100),
+
+                # Redish
+                QColor(100, 40, 40),
+
+                # Greenish
+                QColor(10, 70, 10)
+            ]
+        else:
+            self.color_list = [
+                # Blueish
+                QColor(200, 220, 255),
+
+                # Redish
+                QColor(255, 210, 170),
+
+                # Greenish
+                QColor(200, 255, 170)
+            ]
 
     def __getitem__(self, index):
         """
@@ -67,6 +72,8 @@ class LogTableModel(QAbstractTableModel):
     # If true hold the grid scrolled at the last row
     hold_tail = True
 
+    is_dark = None
+
     def __init__(self, parent, log_data_processor, is_dark, *args):
         """
         Get the lines loaded by this point and copy them to the grid
@@ -83,6 +90,7 @@ class LogTableModel(QAbstractTableModel):
         self.parsed_lines = lines
         self.header = log_data_processor.line_parser.line_format.fields
         self._create_time()
+        self.is_dark = is_dark
         self.color_list = Color_list(is_dark)
 
     def _create_time(self):
@@ -132,6 +140,9 @@ class LogTableModel(QAbstractTableModel):
             self.current_new_color_index = 0
         else:
             self.current_new_color_index += 1
+
+    def get_color(self):
+        return self.color_list[self.current_new_color_index]
 
     def data(self, index, role):
         """
