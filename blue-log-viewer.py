@@ -23,7 +23,12 @@ from log_ui import Window_Factory
 from argparse import ArgumentParser
 from log_poller import Line_Format
 
+import signal
+
 if __name__ == '__main__':
+    # Kill the app on ctrl-c
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     parser = ArgumentParser(
         description='Show an autoupdating grid from Apache\'s Error Log'
     )
