@@ -129,9 +129,9 @@ class Events:
 
         window_color_changer.update_ui()
 
-        self.bind(w, table_model, window_color_changer)
+        self.bind(window, w, table_model, window_color_changer)
 
-    def bind(self, w, table_model, window_color_changer):
+    def bind(self, window, w, table_model, window_color_changer):
         w(QPushButton, 'color').clicked.connect(lambda:
             window_color_changer.change_and_update_ui()
         )
