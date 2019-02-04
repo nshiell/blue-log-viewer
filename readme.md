@@ -28,6 +28,8 @@ _______________________________________________________
 
 ## To Run on Mac OSX:
 ![Log Viewer - Main Window](https://nshiell.com/img/blue-log-viewer/product-osx-v1-1-0.png)
+I use https://brew.sh/ to get it to install - you can try pip3 etc
+
 `python3.7 blue-log-viewer.py`
 
 #### If you see something resembling the following:
@@ -37,7 +39,7 @@ Traceback (most recent call last):
     from PyQt5.QtWidgets import QApplication
 ModuleNotFoundError: No module named 'PyQt5'
 ```
-
+##### Then run
 ```brew install pyqt5```
 
 ...then try again.
