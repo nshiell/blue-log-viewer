@@ -1,10 +1,10 @@
 # A Simple Application To View Apache's error.log file
 
-![Log Viewer - Main Window](https://nshiell.com/img/log-viewer/product.jpg)
+![Log Viewer - Main Window](https://nshiell.com/img/blue-log-viewer/product-ubuntu-v1-1-0.png)
 
 *This program is not related to Apache or the Apache Software Foundation in any way*
 
-## To Run:
+## To Run on GNU/Linux:
 `./blue-log-viewer.py /var/log/apache2/error.log`
 
 #### If you see something resembling the following:
@@ -24,14 +24,20 @@ ModuleNotFoundError: No module named 'PyQt5'
 
 ...then try again.
 
+_______________________________________________________
 
-If you see something like:
+## To Run on Mac OSX:
+![Log Viewer - Main Window](https://nshiell.com/img/blue-log-viewer/product-osx-v1-1-0.png)
+`python3.7 blue-log-viewer.py`
+
+#### If you see something resembling the following:
 ```
-Gtk-Message: 20:57:58.431: GtkDialog mapped without a transient parent. This is discouraged.
-```
-or
-```
-qt5ct: using qt5ct Plugin
+Traceback (most recent call last):
+  File "./blue-log-viewer.py", line 3, in <module>
+    from PyQt5.QtWidgets import QApplication
+ModuleNotFoundError: No module named 'PyQt5'
 ```
 
-Don't worry it should still work fine
+```brew install pyqt5```
+
+...then try again.
