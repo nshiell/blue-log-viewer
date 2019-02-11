@@ -5,6 +5,7 @@
 
 from PyQt5.QtCore import QAbstractTableModel, QTimer, Qt
 from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QTableView
 
 class Color_list:
     """
@@ -47,6 +48,27 @@ class Color_list:
     def len(self):
         return len(self.color_list)
 
+
+class TableRowSpanSetter:
+    """
+    Represents a service which given a table view and a line format
+    Will colspan a row if the line's data fails regex match
+    i.e. all the data is in one cell
+    """
+
+    # So we ca make a visibile UI change
+    table_view = None
+
+    column_count = None
+
+    def __init__(self, line_format, table_view):
+        self.table_view = table_view
+        self.column_count = len(line_format.fields)
+
+    def set_span_for_row(self, index, data):
+        if self.column_count > 1 and index.column() == 0 and data[1] == None:
+            self.table_view.setSpan(index.row(), 0, 1, self.column_count)
+
 class LogTableModel(QAbstractTableModel):
     """
     keep the method names they are an integral part of the model
@@ -57,6 +79,8 @@ class LogTableModel(QAbstractTableModel):
     # the thing that knows how to break up lines o ftext
     # Also knows the column header text
     log_data_processor = None
+
+    table_row_span_setter = None
 
     # the window where the grid object is shown
     parent = None
@@ -154,6 +178,19 @@ class LogTableModel(QAbstractTableModel):
 
         row_no = index.row()
         value = self.parsed_lines[row_no][index.column()]
+
+        # Needs to be lazy-loaded as the table view doesn't exist when
+        # LogTableModel is instantiated
+        if self.table_row_span_setter == None:
+            self.table_row_span_setter = TableRowSpanSetter(
+                self.log_data_processor.line_parser.line_format,
+                self.parent.findChild(QTableView)
+            )
+
+        self.table_row_span_setter.set_span_for_row(
+            index,
+            self.parsed_lines[row_no]
+        )
 
         if role == Qt.BackgroundRole:
             if row_no >= self.log_data_processor.log_file.old_lines:
