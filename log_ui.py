@@ -8,6 +8,7 @@ import log_poller
 
 from window import Window
 
+
 class Line_QMessageBox(QMessageBox):
     """
     Show a QT dialog box with a textarea with the log
@@ -53,6 +54,7 @@ class Bad_File_Dialog():
 
     def show(self):
         self.box.exec_()
+
 
 class Window_color_Changer:
     table_model = None
@@ -105,6 +107,7 @@ class Window_color_Changer:
     def change_and_update_ui(self):
         self.table_model.change_color()
         self.update_ui()
+
 
 class Events:
     """
@@ -191,6 +194,7 @@ class File_Dialog:
 
         return path
 
+
 class Is_Dark_Theme_Detector:
     """
     Simple class that takes a window and works out idf this is a dark theme
@@ -204,6 +208,7 @@ class Is_Dark_Theme_Detector:
         average = (color.red() + color.green() + color.blue()) / 3
 
         return average <= 128
+
 
 class Table_Model_Factory:
     """
