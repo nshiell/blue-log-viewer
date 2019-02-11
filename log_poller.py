@@ -23,14 +23,9 @@ class File:
         Uses Pythons file reading lib for the initial scrape of the file
         """
         fh = open(self.path)
-        while True:
-            line = fh.readline().replace('\n', '')
-            if line:
-                yield line
+        for line in fh.readlines():
+            yield line
 
-            # todo check that empty lines don't truncate the list
-            if not line:
-                break
         fh.close()
 
     def tail_file(self):
