@@ -24,7 +24,11 @@ class Line_QMessageBox(QMessageBox):
         """
         Collapse a list into an HTML bulletted list
         """
-        bullet_list = self.bullet.join(list_details)
+        if len(list_details) > 1 and list_details[1] == None:
+            bullet_list = list_details[0]
+        else:
+            bullet_list = self.bullet.join(list_details)
+
         return self.bullet + bullet_list
 
     def set_line(self, parsed_line, row_no):
@@ -35,7 +39,12 @@ class Line_QMessageBox(QMessageBox):
         self.setText("Information about the item")
         self.setInformativeText(self.list_to_bullets(parsed_line[:-1]))
         self.setWindowTitle('Line %d Details' % row_no)
-        self.setDetailedText(parsed_line[-1])
+
+        if parsed_line[-1]:
+            self.setDetailedText(parsed_line[-1])
+        else:
+            self.setDetailedText(parsed_line[0])
+
         self.setStandardButtons(QMessageBox.Cancel)
 
         return self
