@@ -2,6 +2,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QIcon
+from PyQt5 import uic
 
 class Window_title:
     path = None
@@ -94,9 +95,9 @@ class Window(QMainWindow):
         # table_model also has the file instance, file path and column headers
         table_model = table_model_factory.create(self, parsed_args)
 
-        self.table_view = QTableView_Log()
-        self.table_view.setModel(table_model)
-        self.table_view.setColumsHeaderWidths()
+        #self.table_view = QTableView_Log()
+        #self.table_view.setModel(table_model)
+        #self.table_view.setColumsHeaderWidths()
         self._set_ui()
 
         # bind all events
@@ -119,12 +120,14 @@ class Window(QMainWindow):
         centralwidget = QWidget()
 
         # Force to-string of the object
-        self.setWindowTitle(str(Window_title(
-            self.table_view.table_model.log_data_processor.log_file.path
-        )))
+        #self.setWindowTitle(str(Window_title(
+        #    self.table_view.table_model.log_data_processor.log_file.path
+        #)))
         # Todo - think about storing this in a config somehow
-        self.setGeometry(70, 150, 1326, 582)
-
+        uic.loadUi('main.ui', self)
+        self.table_view = self.findChild(QTableView_Log, 'tableView')
+        self.table_view.setModel(table_model)
+        
         # English GB spelling (no I18N for now)
         color_change_button = QPushButton("Change the colour")
         color_change_button.setObjectName('color')

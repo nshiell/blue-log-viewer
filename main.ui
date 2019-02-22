@@ -37,7 +37,7 @@
       </property>
       <widget class="QTableView" name="tableView"/>
       <widget class="QWidget" name="verticalLayoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0">
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
@@ -90,6 +90,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>(none)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -121,7 +128,7 @@
      <x>0</x>
      <y>0</y>
      <width>1049</width>
-     <height>29</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
