@@ -96,9 +96,11 @@ class Window(QMainWindow):
         table_model = table_model_factory.create(self, parsed_args)
 
         #self.table_view = QTableView_Log()
-        #self.table_view.setModel(table_model)
         #self.table_view.setColumsHeaderWidths()
         self._set_ui()
+        self.table_view.setModel(table_model)
+        #self.table_view.setModel = QTableView_Log.setModel
+        self.table_model = table_model
 
         # bind all events
         self.events = events_factory.create(self)
@@ -110,23 +112,24 @@ class Window(QMainWindow):
 
         Maybe refctor this to the event class?
         """
-        self.table_view.table_model.log_data_processor.start()
+        self.table_model.log_data_processor.start()
 
     def _set_ui(self):
         """
         Set the title,
         drtaw out the UI - boxes, buttons & data grid
         """
-        centralwidget = QWidget()
+        #centralwidget = QWidget()
 
         # Force to-string of the object
         #self.setWindowTitle(str(Window_title(
         #    self.table_view.table_model.log_data_processor.log_file.path
         #)))
         # Todo - think about storing this in a config somehow
-        uic.loadUi('main.ui', self)
-        self.table_view = self.findChild(QTableView_Log, 'tableView')
-        self.table_view.setModel(table_model)
+        self.ui1 = uic.loadUi('main.ui', self)
+
+        #self.table_view = self.findChild(QTableView_Log, 'tableView')
+        self.table_view = self.findChild(QTableView, 'tableView')
         
         # English GB spelling (no I18N for now)
         color_change_button = QPushButton("Change the colour")
@@ -140,9 +143,18 @@ class Window(QMainWindow):
         tailCheckBox.setObjectName('tail')
         tailCheckBox.setLayoutDirection(Qt.RightToLeft)
         tailCheckBox.setChecked(True)
+        
+        
+        #splitter.setStretchFactor(1, 10)
+        settings_button = QPushButton('#')
+        settings_button.setObjectName('config')
+        #play_button.setIcon(QtGui.QApplication.style().standardIcon(QtGui.QStyle.SP_MediaPlay))
+        #play_button.setIcon(QIcon.fromTheme("edit-undo"))
+        
+        
 
-        vbox = QVBoxLayout(centralwidget)
-        vbox.addWidget(self.table_view)
+        #vbox = QVBoxLayout(centralwidget)
+        #vbox.addWidget(self.table_view)
 
         self.statusBar().addWidget(color_change_button)
         self.statusBar().addWidget(current_color_label)
@@ -151,9 +163,23 @@ class Window(QMainWindow):
         hint_label.setStyleSheet("font-style: italic; font-size: 9px")
         self.statusBar().addPermanentWidget(hint_label)
         self.statusBar().addPermanentWidget(tailCheckBox)
+        self.statusBar().addPermanentWidget(settings_button)
 
 
-        self.setCentralWidget(centralwidget)
+        #self.setCentralWidget(centralwidget)
+        print('ffffffffffffff')
+        d = self.findChild(QPushButton, 'open')
+        from pprint import pprint
+        pprint(d)
+        print('ddddddd')
+
+    def show_config(self):
+        #parent
+        #self.findChild(QSplitter, 'splitter').setStretchFactor(0, 10)
+        self.findChild(QVBoxLayout, 'verticalLayout').setVisible(False)
+        
+        #d = self.centralwidget.splitter1#.itemAt(0) #.widget().objectName()
+        #.setStretchFactor(1, 10)
 
     def closeEvent(self, event):
         """

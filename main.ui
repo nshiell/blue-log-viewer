@@ -49,12 +49,12 @@
            </font>
           </property>
           <property name="text">
-           <string>Firstly:</string>
+           <string>First:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="open">
           <property name="text">
            <string>Open a log file</string>
           </property>
@@ -128,7 +128,7 @@
      <x>0</x>
      <y>0</y>
      <width>1049</width>
-     <height>25</height>
+     <height>29</height>
     </rect>
    </property>
   </widget>

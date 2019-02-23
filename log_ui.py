@@ -131,7 +131,7 @@ class Events:
         self.window = window
 
         w = window.findChild
-        table_model = window.table_view.table_model
+        table_model = window.table_model
 
         window_color_changer = Window_color_Changer(
             table_model,
@@ -161,6 +161,10 @@ class Events:
                     modeIndex.row()
                 )
                 .exec_()
+        )
+
+        w(QPushButton, 'config').clicked.connect(lambda:
+            window.show_config()
         )
 
     def window_close(self):
