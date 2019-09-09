@@ -59,14 +59,21 @@ class TableRowSpanSetter:
     # So we ca make a visibile UI change
     table_view = None
 
+    # best count out fields here, it's quicker doing it once
     column_count = None
+
+    # best work out the second field name once, it's quicker doing it once
+    second_field_name = None
 
     def __init__(self, line_format, table_view):
         self.table_view = table_view
         self.column_count = len(line_format.fields)
 
+        if self.column_count > 1:
+            self.second_field_name = line_format.fields[1]
+
     def set_span_for_row(self, index, data):
-        if self.column_count > 1 and index.column() == 0 and data[1] == None:
+        if self.second_field_name and index.column() == 0 and data[self.second_field_name] == None:
             self.table_view.setSpan(index.row(), 0, 1, self.column_count)
 
 class LogTableModel(QAbstractTableModel):
@@ -107,11 +114,7 @@ class LogTableModel(QAbstractTableModel):
         QAbstractTableModel.__init__(self, parent, *args)
         self.parent = parent
         self.log_data_processor = log_data_processor
-        lines = []
-        for line in log_data_processor.parsed_lines:
-            lines.append([v for k,v in line.items()])
-
-        self.parsed_lines = lines
+        self.parsed_lines = log_data_processor.parsed_lines
         self.header = log_data_processor.line_parser.line_format.fields
         self._create_time()
         self.is_dark = is_dark
@@ -126,11 +129,7 @@ class LogTableModel(QAbstractTableModel):
         """
         Re-import ALL the data from the log_data_processor
         """
-        lines = []
-        for line in log_data_processor.parsed_lines:
-            lines.append([v for k,v in line.items()])
-
-        self.parsed_lines = lines
+        self.parsed_lines = log_data_processor.parsed_lines
         self.layoutAboutToBeChanged.emit()
         self.dataChanged.emit(
             self.createIndex(0, 0),
@@ -177,7 +176,7 @@ class LogTableModel(QAbstractTableModel):
             return None
 
         row_no = index.row()
-        value = self.parsed_lines[row_no][index.column()]
+        value = self.parsed_lines[row_no][self.header[index.column()]]
 
         # Needs to be lazy-loaded as the table view doesn't exist when
         # LogTableModel is instantiated
