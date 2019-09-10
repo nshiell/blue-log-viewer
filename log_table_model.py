@@ -3,9 +3,10 @@
 #coding=utf-8
 # Copyright (C) 2019  Nicholas Shiell
 
-from PyQt5.QtCore import QAbstractTableModel, QTimer, Qt
-from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QAbstractTableModel, QTimer, Qt, QVariant
+from PyQt5.QtGui import QColor, QFont, QBrush
 from PyQt5.QtWidgets import QTableView
+
 
 class Color_list:
     """
@@ -70,7 +71,7 @@ class TableRowSpanSetter:
         self.column_count = len(line_format.fields)
 
         if self.column_count > 1:
-            self.second_field_name = line_format.fields[1]
+            self.second_field_name = line_format.fields[1].replace(' ', '_')
 
     def set_span_for_row(self, index, data):
         if self.second_field_name and index.column() == 0 and data[self.second_field_name] == None:
@@ -116,6 +117,7 @@ class LogTableModel(QAbstractTableModel):
         self.log_data_processor = log_data_processor
         self.parsed_lines = log_data_processor.parsed_lines
         self.header = log_data_processor.line_parser.line_format.fields
+        self.header_raw = [x.replace(' ', '_') for x in self.header]
         self._create_time()
         self.is_dark = is_dark
         self.color_list = Color_list(is_dark)
@@ -176,7 +178,7 @@ class LogTableModel(QAbstractTableModel):
             return None
 
         row_no = index.row()
-        value = self.parsed_lines[row_no][self.header[index.column()]]
+        value = self.parsed_lines[row_no][self.header_raw[index.column()]]
 
         # Needs to be lazy-loaded as the table view doesn't exist when
         # LogTableModel is instantiated
@@ -197,10 +199,30 @@ class LogTableModel(QAbstractTableModel):
                     self.line_special_colors[row_no] = self.current_new_color_index
 
                 return self.color_list[self.line_special_colors[row_no]]
-        elif role == Qt.EditRole:
+            #else:
+            #    if row_no % 2:
+            #        from PyQt5.QtGui import QPalette
+            #        c = self.parent.table_view.palette().color(QPalette.Background)
+            #        return QColor(c.red() + 30, c.green() + 30, c.blue() + 30)
+                    #self.parent.table_view.palette().color(QPalette.Background)
+
+        if role == Qt.EditRole:
             return value
-        elif role == Qt.DisplayRole:
+
+        if role == Qt.DisplayRole:
             return value
+
+        if role == Qt.TextAlignmentRole:
+            return Qt.AlignBaseline
+
+        if value != None and role == Qt.FontRole and len(value) > 50:
+            font = QFont()
+            font.setPointSize(9)
+            return font
+
+        if value != None and role == Qt.ForegroundRole and len(value) > 50:
+            color = QColor(128, 128, 128)
+            return QVariant(QBrush(color))
 
     def headerData(self, col, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:

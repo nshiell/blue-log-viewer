@@ -31,7 +31,7 @@ class QTableView_Log(QTableView):
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         # select rows - not cells or columns
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
-
+        self.setWordWrap(False)
         # Sorting on lots of data is expensive
         # and everything should be chromologically ordered
         # This isn't an interactive analyser, just a read-only log view
@@ -39,6 +39,7 @@ class QTableView_Log(QTableView):
 
         # Disable scrollbars so it will be loocked to the bottom (tailed)
         self.verticalScrollBar().setDisabled(True)
+        self.verticalHeader().hide()
 
     def setColumsHeaderWidths(self):
         """
@@ -87,6 +88,7 @@ class Window(QMainWindow):
 
     def __init__(self, table_model_factory, events_factory, parsed_args, *args):
         super().__init__()
+        #elf.setWindowIcon(QIcon('index.png'))
 
         # The table model reprents the state of the data that we know about
         # So everything variable: colors, rows, system state etc
@@ -97,6 +99,8 @@ class Window(QMainWindow):
         self.table_view = QTableView_Log()
         self.table_view.setModel(table_model)
         self.table_view.setColumsHeaderWidths()
+        self.table_view.setAlternatingRowColors(True)
+        self.table_view.setShowGrid(False)
         self._set_ui()
 
         # bind all events
@@ -123,7 +127,7 @@ class Window(QMainWindow):
             self.table_view.table_model.log_data_processor.log_file.path
         )))
         # Todo - think about storing this in a config somehow
-        self.setGeometry(70, 150, 1326, 582)
+        self.setGeometry(70, 150, 1200, 700)
 
         # English GB spelling (no I18N for now)
         color_change_button = QPushButton("Change the colour")
