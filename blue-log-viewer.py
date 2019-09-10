@@ -21,7 +21,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from log_ui import Window_Factory
 from argparse import ArgumentParser
-from log_poller import Line_Format
+from line_format import Factory as LineFormatFactory
 
 import signal
 
@@ -43,11 +43,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     args = parser.parse_args()
 
-    line_format = Line_Format(
-        #  [some date]                [:error]            [pid - ignored] [client xxx.xxx.xxx.xxx] message to EOL
-        '^\[(?P<Timestamp>[^\]]+)\] \[(?P<Type>[^\]]+)\] \[(?:[^\]]+)\] \[client (?P<Client>[^\]]+)\] (?P<Message>.*)$')
-
-    window = Window_Factory().create(line_format, args)
+    window = Window_Factory().create(LineFormatFactory(), args)
     window.show()
     window.start_polling()
 

@@ -106,23 +106,6 @@ class Line_Parser:
         line_wrapped[self.line_format.fields[0]] = line
         return line_wrapped
 
-
-class Line_Format:
-    """
-    Represents line headings and regex
-    """
-    regex = None
-    fields = []
-
-    def __init__(self, regex):
-        self.regex = regex
-
-        # Secondry regex to get the column names from the regex match groups
-        # So actually regexing a regex
-        fields = re.findall('\?P\<(.*?)\>', regex)
-        self.fields = [field.replace('_', ' ') for field in fields]
-
-
 class Processor_Thread(QThread):
     """
     This thread will create an expanding array of parsed_lines

@@ -14,22 +14,11 @@ class Line_QMessageBox(QMessageBox):
     Show a QT dialog box with a textarea with the log
     """
     bullet = None
+    header = None
 
-    def __init__(self):
+    def __init__(self, header):
         super().__init__()
-        bullet = u"\u2022"
-        self.bullet = '<br />    <span style="color: #AAAAAA">' + bullet + '</span> '
-
-    def list_to_bullets(self, list_details):
-        """
-        Collapse a list into an HTML bulletted list
-        """
-        if len(list_details) > 1 and list_details[1] == None:
-            bullet_list = list_details[0]
-        else:
-            bullet_list = self.bullet.join(list_details)
-
-        return self.bullet + bullet_list
+        self.header = header
 
     def set_line(self, parsed_line, row_no):
         """
@@ -37,13 +26,14 @@ class Line_QMessageBox(QMessageBox):
         """
         self.setIcon(QMessageBox.Information)
         self.setText("Information about the item")
-        self.setInformativeText(self.list_to_bullets(parsed_line[:-1]))
+        from pprint import pprint
+        text = ''
+        for field in self.header:
+            if parsed_line[field]:
+                text+= field + '\n' + parsed_line[field]
+        self.setDetailedText(text)
+        self.setInformativeText(text[:100])
         self.setWindowTitle('Line %d Details' % row_no)
-
-        if parsed_line[-1]:
-            self.setDetailedText(parsed_line[-1])
-        else:
-            self.setDetailedText(parsed_line[0])
 
         self.setStandardButtons(QMessageBox.Cancel)
 
@@ -155,7 +145,7 @@ class Events:
         )
 
         w(QTableView).doubleClicked.connect(lambda modeIndex:
-            Line_QMessageBox()
+            Line_QMessageBox(table_model.header)
                 .set_line(
                     table_model.parsed_lines[modeIndex.row()],
                     modeIndex.row()
@@ -230,11 +220,11 @@ class Table_Model_Factory:
     setup before handing this object to the window
     as the window doesn't care how data is parsed
     """
-    line_format = None
+    line_format_factory = None
     is_dark_theme_detector = None
 
-    def __init__(self, line_format, is_dark_theme_detector):
-        self.line_format = line_format
+    def __init__(self, line_format_factory, is_dark_theme_detector):
+        self.line_format_factory = line_format_factory
         self.is_dark_theme_detector = is_dark_theme_detector
 
     def create(self, window, args):
@@ -250,7 +240,7 @@ class Table_Model_Factory:
         # the thread will be started by an external call to the window
         log_file = log_poller.File(file_path)
 
-        line_parser = log_poller.Line_Parser(self.line_format)
+        line_parser = log_poller.Line_Parser(self.line_format_factory.create(file_path))
         log_data_processor = log_poller.Processor_Thread(log_file, line_parser)
 
         return LogTableModel(
@@ -266,9 +256,9 @@ class Events_Factory:
 
 
 class Window_Factory:
-    def create(self, line_format, args):
+    def create(self, line_format_factory, args):
         return Window(
-            Table_Model_Factory(line_format, Is_Dark_Theme_Detector()),
+            Table_Model_Factory(line_format_factory, Is_Dark_Theme_Detector()),
             Events_Factory(),
             args
         )
