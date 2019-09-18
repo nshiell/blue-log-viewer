@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 """
-    Apache Log Viewer - View Apache's Log in a GUI
+    Blue Log Viewer - Log files in a GUI
     This program is not related to Apache or the Apache Software Foundation in any way
     Copyright (C) 2019  Nicholas Shiell
 
@@ -21,7 +21,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from argparse import ArgumentParser
 from blueLogViewer.windows import QMainWindowBlueLogViewer, get_valid_path
-from blueLogViewer import Model
+from blueLogViewer import LineCollection
 
 import signal
 
@@ -48,10 +48,13 @@ if __name__ == '__main__':
     main_window = QMainWindowBlueLogViewer()
     path = get_valid_path(main_window, args.file)
 
-    model = Model()
-    model.path = path
+    line_collection = LineCollection()
+    line_collection.path = path
 
-    main_window.setup(model)
+    #from pprint import pprint
+    #pprint(model.line_format)
+
+    main_window.setup(line_collection)
     main_window.show()
     #window = Window_Factory().create(LineFormatFactory(), args)
     #window.show()
