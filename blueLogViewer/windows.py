@@ -67,7 +67,7 @@ class QTableViewLog(QTableView):
 
 
         # Disable scrollbars so it will be loocked to the bottom (tailed)
-        self.verticalScrollBar().setDisabled(True)
+        #self.verticalScrollBar().setDisabled(True)
         self.verticalHeader().hide()
 
     def setColumsHeaderWidths(self):
@@ -91,9 +91,9 @@ class QTableViewLog(QTableView):
 class QMainWindowBlueLogViewer(QMainWindow):
     table_view = None
 
-    def setup(self, model):
+    def setup(self, table_model):
         self.table_view = QTableViewLog()
-        self.table_view.setModel(model.create_table_model(self))
+        self.table_view.setModel(table_model)
 
         """
         Set the title,

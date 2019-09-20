@@ -1,1 +1,1 @@
-from .model import LineCollection
+from .model import LineCollection, LineCollectionBroker

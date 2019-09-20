@@ -21,7 +21,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from argparse import ArgumentParser
 from blueLogViewer.windows import QMainWindowBlueLogViewer, get_valid_path
-from blueLogViewer import LineCollection
+from blueLogViewer import LineCollection, LineCollectionBroker
 
 import signal
 
@@ -48,13 +48,16 @@ if __name__ == '__main__':
     main_window = QMainWindowBlueLogViewer()
     path = get_valid_path(main_window, args.file)
 
-    line_collection = LineCollection()
-    line_collection.path = path
+    broker = LineCollectionBroker(path, main_window)
+
+    #line_collection = LineCollection()
+    #line_collection.path = path
 
     #from pprint import pprint
     #pprint(model.line_format)
 
-    main_window.setup(line_collection)
+    #main_window.setup(line_collection)
+    main_window.setup(broker.table_model)
     main_window.show()
     #window = Window_Factory().create(LineFormatFactory(), args)
     #window.show()
