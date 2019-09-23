@@ -1,6 +1,6 @@
 # A Simple Application To View Apache's error.log file
 
-![Log Viewer - Main Window](https://nshiell.com/img/blue-log-viewer/product-ubuntu-v1-1-0.png)
+![Log Viewer - Main Window](https://nshiell.com/img/blue-log-viewer/product-ubuntu-v1-2-0.png)
 
 *This program is not related to Apache or the Apache Software Foundation in any way*
 
@@ -27,7 +27,7 @@ ModuleNotFoundError: No module named 'PyQt5'
 _______________________________________________________
 
 ## To Run on Mac OSX:
-![Log Viewer - Main Window](https://nshiell.com/img/blue-log-viewer/product-osx-v1-1-0.png)
+![Log Viewer - Main Window](https://nshiell.com/img/blue-log-viewer/product-osx-v1-2-0.png)
 I use https://brew.sh/ to get it to install - you can try pip3 etc
 
 `python3.7 blue-log-viewer.py`
