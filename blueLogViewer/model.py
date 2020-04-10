@@ -2,16 +2,11 @@
 from PyQt5.QtCore import Qt, QSize, QAbstractTableModel
 from blueLogViewer.line_format import Factory as LineFormatFactory
 
-
-import re
+import re, subprocess, select, time
 
 from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSignal
-
-
-
-
-
+from PyQt5.QtGui import QColor
 
 class File:
     """
@@ -39,7 +34,7 @@ class File:
         """
         After the initial file read
         spawn tail -F   (to hold the file open)
-                   -n 0 (to show new lines we already know about)
+                   -n 0 (to show new lines we don't know about)
         Each new line will get yielded out
 
         Don't forget to call self.tail_kill() when to program is done
@@ -62,26 +57,11 @@ class File:
                     yield line
             time.sleep(1)
 
-
-    #def get_lines(self):
-    #    """
-    #    Gets the existing lines then starts tail
-    #    yields them out
-    #    """
-    #    for line in self.read_file():
-    #        yield line
-    #        self.old_lines = self.old_lines + 1
-    #    
-    #    for line in self.tail_file():
-    #        yield line
-
     def tail_kill(self):
         """
         Call this at the end of the program
         """
         self.proc.kill()
-
-
 
 
 class LineParser:
@@ -117,40 +97,37 @@ class LineParser:
 
 
 
+
 class LineCollectionBroker():
-    _path = None
     line_collection = None
     table_model = None
     _line_parser = None
+    log_file = None
+    tail_thread = None
 
     def __init__(self, path, window):
-        self._path = path
-        
-        log_file = File(path)
-        
-        t = Thready(self)
-        t.start()
-        
+        self.log_file = File(path)
+
         line_format = LineFormatFactory().create(path)
         self.line_collection = LineCollection(line_format)
         self.table_model = LogTableModel(window, self.line_collection)
         
         self._line_parser = LineParser(line_format)
-        for line in log_file.read_file():
+
+    def read_file_current_lines(self):
+        for line in self.log_file.read_file():
             self.line_collection.add_line(self._line_parser.parse(line))
+
+    def start_tailling(self):
+        self.tail_thread = TailThread(self)
+        self.tail_thread.start()
     
     def new_line(self, line):
-        print ('=====')
-        print(line)
         self.line_collection.add_line(self._line_parser.parse(line))
         self.table_model.update_emit()
 
-import time
-def blah(line):
-    print ('asdf')
-    print(line)
 
-class Thready(QThread):
+class TailThread(QThread):
     sig = pyqtSignal(str)
     broker = None
     def __init__(self, broker, parent=None):
@@ -159,28 +136,22 @@ class Thready(QThread):
         self.sig.connect(broker.new_line)
 
     def run(self):
-        time.sleep(5)
-        print ('thing')
-        self.sig.emit('sfgsdfg')
-        
-
-#thready = Thready()
-#thready.start()
+        for line in self.broker.log_file.tail_file():
+            self.sig.emit(line)
 
 
 class LogTableModel(QAbstractTableModel):
     """Don't change these method names"""
-    __line_collection = None
+    _line_collection = None
 
     def __init__(self, parent, line_collection, *args):
-        self.__line_collection = line_collection
+        self._line_collection = line_collection
         return super().__init__(parent, *args)
 
     def update_emit(self):
         """
-        Re-import ALL the data from the log_data_processor
+        We have updated data, tell Qt to do a re-update process
         """
-        #self.parsed_lines = log_data_processor.parsed_lines
         self.layoutAboutToBeChanged.emit()
         self.dataChanged.emit(
             self.createIndex(0, 0),
@@ -188,17 +159,11 @@ class LogTableModel(QAbstractTableModel):
         )
         self.layoutChanged.emit()
 
-    #def setDataList(self):
-    #    self.update_emit()
-
-    #def updateModel(self):
-    #    self.update_emit()
-
     def rowCount(self, parent):
-        return self.__line_collection.get_lines_count()
+        return self._line_collection.get_lines_count()
 
     def columnCount(self, parent):
-        return self.__line_collection.get_headers_count()
+        return self._line_collection.get_headers_count()
 
     def data(self, index, role):
         """
@@ -208,43 +173,33 @@ class LogTableModel(QAbstractTableModel):
             return None
 
         if role == Qt.DisplayRole:
-            return self.__line_collection.get_value(index.column(), index.row())
+            return self._line_collection.get_value(index.column(), index.row())
+
+        if role == Qt.BackgroundRole:
+            return self._line_collection.get_line_color(index.row())
 
     def headerData(self, col, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return self.__line_collection.get_header(col)
+            return self._line_collection.get_header(col)
 
         return None
 
+    @property
+    def is_dark(self):
+        return self._line_collection.is_dark
 
-
+    @is_dark.setter
+    def is_dark(self, is_dark):
+        self._line_collection.is_dark = is_dark
 
 
 class LineCollection:
-    #_table_model = None
-    #path = None
+    color_list = None
 
     _line_format = None
-
     _parsed_lines = []
-    """[{
-        'Timestamp': 'AAAAA',
-        'Client': 'BBBBB',
-        'Type': 'CCCCC',
-        'Message': 'dddddd'
-    },
-    {
-        'Timestamp': 'TTT',
-        'Client': 'jkhjkh',
-        'Type': 'kjhiyt8687yh',
-        'Message': 'dddddd'
-    },
-    {
-        'Timestamp': 'EFWEF',
-        'Client': 'ZZZZ',
-        'Type': 'xxxx',
-        'Message': 'dddddd'
-    }]"""
+    _line_colors = {}
+    _is_dark = None
 
     def __init__(self, line_format):
         self._line_format = line_format
@@ -262,17 +217,62 @@ class LineCollection:
         field = self._line_format.fields[column]
         return self._parsed_lines[row][field]
 
-    #def create_table_model(self, window):
-    #    if not self.__line_format:
-    #        self.__line_format = LineFormatFactory().create(self.path)
-
-    #    if self.__table_model == None:
-    #        self.__table_model = LogTableModel(window, self)
-
-    #    return self.__table_model
-
-#    def add_lines(self, parsed_lines):
-#        self._parsed_lines = parsed_lines
+    def get_line_color(self, row):
+        if row in self._line_colors:
+            return self._line_colors[row]
 
     def add_line(self, parsed_line):
         self._parsed_lines.append(parsed_line)
+        if self.color_list:
+            self._line_colors[len(self._parsed_lines)] = self.color_list[0]
+
+    @property
+    def is_dark(self):
+        return self._is_dark
+
+    @is_dark.setter
+    def is_dark(self, is_dark):
+        self._is_dark = is_dark
+        self.color_list = ColorList(is_dark)
+
+
+class ColorList:
+    """
+    Represents the ordered set of background colors
+    Will invert the colors - needed for dark themes
+    """
+    color_list = None
+
+    def __init__(self, is_dark=False):
+        if is_dark:
+            self.color_list = [
+                # Blueish
+                QColor(0, 40, 100),
+
+                # Redish
+                QColor(100, 40, 40),
+
+                # Greenish
+                QColor(10, 70, 10)
+            ]
+        else:
+            self.color_list = [
+                # Blueish
+                QColor(200, 220, 255),
+
+                # Redish
+                QColor(255, 210, 170),
+
+                # Greenish
+                QColor(200, 255, 170)
+            ]
+
+    def __getitem__(self, index):
+        """
+        Access members like this object is a list
+        """
+        return self.color_list[index]
+
+    @property
+    def len(self):
+        return len(self.color_list)

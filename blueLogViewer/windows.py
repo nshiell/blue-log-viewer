@@ -1,7 +1,8 @@
 # Copyright (C) 2019  Nicholas Shiell
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPalette
+
 import os
 
 _default_path = '/var/log'
@@ -45,7 +46,7 @@ class QTableViewLog(QTableView):
 
     # to avoid having to fish around in the inheritance chain to get this object
     # store a referecnce here
-    #table_model = None
+    table_model = None
 
     def __init__(self):
         super().__init__()
@@ -87,6 +88,17 @@ class QTableViewLog(QTableView):
             else:
                 headerMode(column, QHeaderView.Stretch)
 
+    def setModel(self, table_model):
+        self.table_model = table_model
+        super().setModel(table_model)
+
+    @property
+    def is_dark(self):
+        return self.table_model.is_dark
+
+    @is_dark.setter
+    def is_dark(self, is_dark):
+        self.table_model.is_dark = is_dark
 
 class QMainWindowBlueLogViewer(QMainWindow):
     table_view = None
@@ -134,3 +146,14 @@ class QMainWindowBlueLogViewer(QMainWindow):
 
 
         self.setCentralWidget(centralwidget)
+
+    def show(self):
+        super().show()
+        self.table_view.is_dark = self._is_dark
+
+    @property
+    def _is_dark(self):
+        color = self.palette().color(QPalette.Background)
+        average = (color.red() + color.green() + color.blue()) / 3
+    
+        return average <= 128

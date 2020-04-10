@@ -21,6 +21,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from argparse import ArgumentParser
 from blueLogViewer.windows import QMainWindowBlueLogViewer, get_valid_path
+from blueLogViewer import Events
 from blueLogViewer import LineCollection, LineCollectionBroker
 
 import signal
@@ -46,21 +47,14 @@ if __name__ == '__main__':
     # We need a main window before we show anything
     # even if we are not ready to show it yet!
     main_window = QMainWindowBlueLogViewer()
+    Events(main_window)
     path = get_valid_path(main_window, args.file)
 
     broker = LineCollectionBroker(path, main_window)
+    broker.read_file_current_lines()
+    broker.start_tailling()
 
-    #line_collection = LineCollection()
-    #line_collection.path = path
-
-    #from pprint import pprint
-    #pprint(model.line_format)
-
-    #main_window.setup(line_collection)
     main_window.setup(broker.table_model)
     main_window.show()
-    #window = Window_Factory().create(LineFormatFactory(), args)
-    #window.show()
-    #window.start_polling()
 
     app.exec_()
