@@ -192,9 +192,17 @@ class LogTableModel(QAbstractTableModel):
     def is_dark(self, is_dark):
         self._line_collection.is_dark = is_dark
 
+    def change_color(self):
+        return self._line_collection.change_color()
+
+    @property
+    def current_color(self):
+        return self._line_collection.current_color
+
 
 class LineCollection:
     color_list = None
+    current_new_color_index = 0
 
     _line_format = None
     _parsed_lines = []
@@ -235,6 +243,18 @@ class LineCollection:
         self._is_dark = is_dark
         self.color_list = ColorList(is_dark)
 
+    def change_color(self):
+        """
+        Find the next color and set it to be used from now on
+        """
+        if self.color_list.len == self.current_new_color_index + 1:
+            self.current_new_color_index = 0
+        else:
+            self.current_new_color_index += 1
+
+    @property
+    def current_color(self):
+        return self.color_list[self.current_new_color_index]
 
 class ColorList:
     """

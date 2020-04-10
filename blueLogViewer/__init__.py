@@ -1,2 +1,2 @@
 from .model import LineCollection, LineCollectionBroker
-from .events import Events
+from .events import EventsBinder

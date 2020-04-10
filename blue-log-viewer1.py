@@ -21,7 +21,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from argparse import ArgumentParser
 from blueLogViewer.windows import QMainWindowBlueLogViewer, get_valid_path
-from blueLogViewer import Events
+from blueLogViewer import EventsBinder
 from blueLogViewer import LineCollection, LineCollectionBroker
 
 import signal
@@ -47,7 +47,6 @@ if __name__ == '__main__':
     # We need a main window before we show anything
     # even if we are not ready to show it yet!
     main_window = QMainWindowBlueLogViewer()
-    Events(main_window)
     path = get_valid_path(main_window, args.file)
 
     broker = LineCollectionBroker(path, main_window)
@@ -55,6 +54,11 @@ if __name__ == '__main__':
     broker.start_tailling()
 
     main_window.setup(broker.table_model)
+    EventsBinder(main_window)
     main_window.show()
+
+    # Needed to allow the window to be drawn to get it's colors
+    app.processEvents()
+    main_window.is_now_visibile.emit()
 
     app.exec_()

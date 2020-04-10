@@ -1,6 +1,6 @@
 # Copyright (C) 2019  Nicholas Shiell
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtGui import QIcon, QPalette
 
 import os
@@ -62,7 +62,7 @@ class QTableViewLog(QTableView):
         # This isn't an interactive analyser, just a read-only log view
         self.setSortingEnabled(False)
 
-        self.setColumsHeaderWidths()
+        #self.setColumsHeaderWidths()
         self.setAlternatingRowColors(True)
         self.setShowGrid(False)
 
@@ -71,7 +71,7 @@ class QTableViewLog(QTableView):
         #self.verticalScrollBar().setDisabled(True)
         self.verticalHeader().hide()
 
-    def setColumsHeaderWidths(self):
+    def _configure_size_columns(self):
         """
         Overriding a QT method here - hence the naming
         All columns wont stretch out except the last one -
@@ -91,6 +91,7 @@ class QTableViewLog(QTableView):
     def setModel(self, table_model):
         self.table_model = table_model
         super().setModel(table_model)
+        self._configure_size_columns()
 
     @property
     def is_dark(self):
@@ -102,6 +103,7 @@ class QTableViewLog(QTableView):
 
 class QMainWindowBlueLogViewer(QMainWindow):
     table_view = None
+    is_now_visibile = pyqtSignal()
 
     def setup(self, table_model):
         self.table_view = QTableViewLog()
@@ -147,13 +149,9 @@ class QMainWindowBlueLogViewer(QMainWindow):
 
         self.setCentralWidget(centralwidget)
 
-    def show(self):
-        super().show()
-        self.table_view.is_dark = self._is_dark
-
     @property
-    def _is_dark(self):
+    def is_dark(self):
         color = self.palette().color(QPalette.Background)
         average = (color.red() + color.green() + color.blue()) / 3
-    
+
         return average <= 128
