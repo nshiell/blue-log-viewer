@@ -1,4 +1,6 @@
 # Copyright (C) 2019  Nicholas Shiell
+import os
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QTimer
@@ -12,13 +14,16 @@ class EventsBinder:
     """
     window = None
     window_color_changer = None
+    log_file = None
 
-    def __init__(self, window):
+    def __init__(self, window, log_file):
         self.window = window
+        self.log_file = log_file
 
         if not window.table_view:
             raise TypeError('Call window.setup() before binding events')
 
+        window.closed.connect(self.handle_close)
         window.is_now_visibile.connect(self.window_shown)
 
         w = window.findChild
@@ -68,21 +73,13 @@ class EventsBinder:
         self.window.table_view.table_model.is_dark = self.window.is_dark
         self.window_color_changer.update_ui()
 
-    def window_close(self):
+    def handle_close(self):
         """
         When closing the window the tail thread is killed
         and the program exists
         """
-        (self
-            .window
-            .table_view
-            .table_model
-            .log_data_processor
-            .log_file
-            .tail_kill()
-        )
+        self.log_file.tail_kill()
         os._exit(0)
-
 
 class ColorChanger:
     table_model = None

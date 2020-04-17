@@ -104,6 +104,7 @@ class QTableViewLog(QTableView):
 class QMainWindowBlueLogViewer(QMainWindow):
     table_view = None
     is_now_visibile = pyqtSignal()
+    closed = pyqtSignal()
 
     def setup(self, table_model):
         self.table_view = QTableViewLog()
@@ -155,3 +156,10 @@ class QMainWindowBlueLogViewer(QMainWindow):
         average = (color.red() + color.green() + color.blue()) / 3
 
         return average <= 128
+
+    def closeEvent(self, event):
+        """
+        Proxies over to the event class - easier this way I think
+        """
+        event.accept()
+        self.closed.emit()
