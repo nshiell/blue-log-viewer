@@ -23,8 +23,29 @@ from argparse import ArgumentParser
 from blueLogViewer.windows import QMainWindowBlueLogViewer, get_valid_path
 from blueLogViewer import EventsBinder
 from blueLogViewer import LineCollection, LineCollectionBroker
+from test import server
 
 import signal
+
+from PyQt5.QtCore import QRunnable, pyqtSlot, QThreadPool
+
+import time
+
+class Worker(QRunnable):
+    '''
+    Worker thread
+    '''
+    main_window = None
+
+    def __init__(self, main_window, *args, **kwargs):
+        super().__init__()
+        self.args = args
+        self.kwargs = kwargs
+        self.main_window = main_window
+
+    @pyqtSlot()
+    def run(self):
+        server.start(self.main_window)
 
 if __name__ == '__main__':
     # Kill the app on ctrl-c
@@ -54,11 +75,17 @@ if __name__ == '__main__':
     broker.start_tailling()
 
     main_window.setup(broker.table_model)
-    EventsBinder(main_window)
+    EventsBinder(main_window, broker.log_file)
     main_window.show()
 
     # Needed to allow the window to be drawn to get it's colors
     app.processEvents()
     main_window.is_now_visibile.emit()
+
+    # Flip this to true to enable functional testing
+    if False:
+        worker = Worker(main_window)
+        threadpool = QThreadPool()
+        threadpool.start(worker)
 
     app.exec_()
