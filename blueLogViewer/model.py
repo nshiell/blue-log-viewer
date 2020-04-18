@@ -2,7 +2,7 @@
 from PyQt5.QtCore import Qt, QSize, QAbstractTableModel
 from blueLogViewer.line_format import Factory as LineFormatFactory
 
-import re, subprocess, select, time
+import re, io, subprocess, select, time
 
 from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSignal
@@ -44,18 +44,9 @@ class File:
         p = select.poll()
         p.register(self.proc.stdout)
 
-        while True:
-            if p.poll(1):
-                line = (self
-                    .proc
-                    .stdout
-                    .readline()
-                    .decode("utf-8")
-                    .replace('\n', '')
-                )
-                if line:
-                    yield line
-            time.sleep(1)
+        for line in io.TextIOWrapper(self.proc.stdout, encoding="utf-8"):
+            if line.strip():
+                yield line
 
     def tail_kill(self):
         """
@@ -123,6 +114,7 @@ class LineCollectionBroker():
         self.tail_thread.start()
     
     def new_line(self, line):
+        print('asd')
         self.line_collection.add_line(self._line_parser.parse(line))
         self.table_model.update_emit()
 
