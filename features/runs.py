@@ -10,7 +10,7 @@ class TestFeatures(FunctionalTestCase):
     """ Feature: Users can tail logs """
 
     """ Rule: There shouldn't be any running processes on quit """
-    def stest_no_leftover_processes(self):
+    def test_no_leftover_processes(self):
         """
             Given a log file
             When I load the file
@@ -44,7 +44,7 @@ class TestFeatures(FunctionalTestCase):
 
     """ Rule: the user can see logs in realtime """
 
-    def stest_shows_values_and_add(self):
+    def test_shows_values_and_add(self):
         """
             Given a log file with contents
             When the file is loaded
@@ -129,11 +129,9 @@ class TestFeatures(FunctionalTestCase):
             )
         )
 
-
-
     """ Rule: new lines are shown in colours """
 
-    def stest_shows_colors(self):
+    def test_shows_colors(self):
         """
             Given a light themed desktop
             And a log file with contents
@@ -147,29 +145,14 @@ class TestFeatures(FunctionalTestCase):
         self.make_fixture_temp_dir()
         shutil.copy(fixture_path, fixture_temp_path)
         self.start(fixture_temp_path, ['-stylesheet', 'fixtures/QTDark.stylesheet'])
-
-        self.assertEqual(
-            'AAA', 
-            self.exec_in_app('self.main_window.table_view.table_model.index(0, 0).data()')
-        )
         
         self.assertIsNone(self.exec_in_app(
             'self.main_window.table_view.table_model.index(0, 0).data(Qt.BackgroundRole).name()'
         ))
 
-        self.assertEqual(
-            'BBB', 
-            self.exec_in_app('self.main_window.table_view.table_model.index(1, 0).data()')
-        )
-
         self.assertIsNone(self.exec_in_app(
             'self.main_window.table_view.table_model.index(1, 0).data(Qt.BackgroundRole).name()'
         ))
-
-        self.assertEqual(
-            'CCC', 
-            self.exec_in_app('self.main_window.table_view.table_model.index(2, 0).data()')
-        )
 
         self.assertIsNone(self.exec_in_app(
             'self.main_window.table_view.table_model.index(2, 0).data(Qt.BackgroundRole).name()'
@@ -193,36 +176,10 @@ class TestFeatures(FunctionalTestCase):
         time.sleep(.3)
 
         self.assertEqual(
-            'AAA', 
-            self.exec_in_app('self.main_window.table_view.table_model.index(0, 0).data()')
-        )
-
-        self.assertEqual(
-            'BBB', 
-            self.exec_in_app('self.main_window.table_view.table_model.index(1, 0).data()')
-        )
-
-        self.assertEqual(
-            'CCC', 
-            self.exec_in_app('self.main_window.table_view.table_model.index(2, 0).data()')
-        )
-
-        self.assertEqual(
-            'XXX', 
-            self.exec_in_app('self.main_window.table_view.table_model.index(3, 0).data()')
-        )
-
-        # Make this pass!!!!
-        #self.assertEqual(
-        #    '#002864',
-        #    self.exec_in_app(
-        #        'self.main_window.table_view.table_model.index(3, 0).data(Qt.BackgroundRole).name()'
-        #    )
-        #)
-
-        self.assertEqual(
-            'YYY', 
-            self.exec_in_app('self.main_window.table_view.table_model.index(4, 0).data()')
+            '#002864',
+            self.exec_in_app(
+                'self.main_window.table_view.table_model.index(3, 0).data(Qt.BackgroundRole).name()'
+            )
         )
 
         self.assertEqual(
@@ -230,11 +187,6 @@ class TestFeatures(FunctionalTestCase):
             self.exec_in_app(
                 'self.main_window.table_view.table_model.index(4, 0).data(Qt.BackgroundRole).name()'
             )
-        )
-
-        self.assertEqual(
-            'ZZZ', 
-            self.exec_in_app('self.main_window.table_view.table_model.index(5, 0).data()')
         )
 
         self.assertEqual(
