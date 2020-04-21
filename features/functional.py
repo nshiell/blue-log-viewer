@@ -69,6 +69,7 @@ class FunctionalTestCase(unittest.TestCase):
     def tearDown(self):
         if self.needs_killing:
             self.kill()
+            self.needs_killing = False
 
         if os.path.exists(self.fixture_temp_dir):
             shutil.rmtree(self.fixture_temp_dir)

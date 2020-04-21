@@ -129,22 +129,37 @@ class TestFeatures(FunctionalTestCase):
             )
         )
 
+
     """ Rule: new lines are shown in colours """
 
     def test_shows_colors(self):
+        data_calls = [{
+            'stylesheet' : 'fixtures/QTDark.stylesheet',
+            'color'      : '#002864'
+        },
+        {
+            'stylesheet' : 'fixtures/QTLight.stylesheet',
+            'color'      : '#c8dcff'
+        }]
+
+        for data in data_calls:
+            self.executer_shows_colors(data['stylesheet'], data['color'])
+            self.tearDown()
+
+    def executer_shows_colors(self, stylesheet, color):
         """
-            Given a light themed desktop
+            Given a themed desktop
             And a log file with contents
             When the file is loaded
             Then the existing contents should not be highlighted
-            And when lines are added they should be lighted in the first colour
+            And when lines are added they should be highlighted in the first colour mathing the theme
         """
         fixture_path = os.path.join(self.dir_project_root, 'fixtures', 'simple1.log')
         fixture_temp_path = os.path.join(self.fixture_temp_dir, 'simple.log')
 
         self.make_fixture_temp_dir()
         shutil.copy(fixture_path, fixture_temp_path)
-        self.start(fixture_temp_path, ['-stylesheet', 'fixtures/QTDark.stylesheet'])
+        self.start(fixture_temp_path, ['-stylesheet', stylesheet])
         
         self.assertIsNone(self.exec_in_app(
             'self.main_window.table_view.table_model.index(0, 0).data(Qt.BackgroundRole).name()'
@@ -176,21 +191,21 @@ class TestFeatures(FunctionalTestCase):
         time.sleep(.3)
 
         self.assertEqual(
-            '#002864',
+            color,
             self.exec_in_app(
                 'self.main_window.table_view.table_model.index(3, 0).data(Qt.BackgroundRole).name()'
             )
         )
 
         self.assertEqual(
-            '#002864',
+            color,
             self.exec_in_app(
                 'self.main_window.table_view.table_model.index(4, 0).data(Qt.BackgroundRole).name()'
             )
         )
 
         self.assertEqual(
-            '#002864',
+            color,
             self.exec_in_app(
                 'self.main_window.table_view.table_model.index(5, 0).data(Qt.BackgroundRole).name()'
             )
