@@ -6,6 +6,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from io import BytesIO
 import os
+from PyQt5.QtCore import Qt
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     main_window = None
