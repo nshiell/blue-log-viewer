@@ -7,8 +7,15 @@ import subprocess
 import shutil
 
 class FunctionalTestCase(unittest.TestCase):
+    needs_killing = False
+
     dir_project_root = os.path.dirname(
         os.path.dirname(os.path.abspath(__file__))
+    )
+
+    fixture_temp_dir = os.path.join(
+        dir_project_root,
+        'fixtures-temp'
     )
 
     def get_tails_running_count(self):
@@ -31,10 +38,10 @@ class FunctionalTestCase(unittest.TestCase):
 
         return matching_processes
 
-    def start(self, file_path):
+    def start(self, file_path, args=[]):
         program_path = os.path.join(self.dir_project_root, 'blue-log-viewer1.py')
         proc = subprocess.Popen(
-            ['python3', program_path, file_path],
+            ['python3', program_path, file_path] + args,
             stdout = subprocess.PIPE,
             stderr = subprocess.PIPE
         )
@@ -43,6 +50,7 @@ class FunctionalTestCase(unittest.TestCase):
 
         proc.stdout.close()
         proc.stderr.close()
+        self.needs_killing = True
 
     def exec_in_app(self, cmd):
         response = requests.post(url = 'http://localhost:8032/', json = {
@@ -56,6 +64,21 @@ class FunctionalTestCase(unittest.TestCase):
 
     def kill(self):
         self.exec_in_app('self.main_window.close()')
+        self.needs_killing = False
+
+    def tearDown(self):
+        if self.needs_killing:
+            self.kill()
+
+        if os.path.exists(self.fixture_temp_dir):
+            shutil.rmtree(self.fixture_temp_dir)
+
+    def make_fixture_temp_dir(self):
+        if os.path.exists(self.fixture_temp_dir):
+            shutil.rmtree(self.fixture_temp_dir)
+
+        os.mkdir(self.fixture_temp_dir)
+
 
 if __name__ == '__main__':
     unittest.main()
