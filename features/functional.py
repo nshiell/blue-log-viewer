@@ -6,8 +6,11 @@ import os, time, json
 import subprocess
 import shutil
 
+import warnings
+
 class FunctionalTestCase(unittest.TestCase):
     needs_killing = False
+    suppresed_warnings = False
 
     dir_project_root = os.path.dirname(
         os.path.dirname(os.path.abspath(__file__))
@@ -20,7 +23,7 @@ class FunctionalTestCase(unittest.TestCase):
 
     def get_tails_running_count(self):
         proc = subprocess.Popen(
-            ['ps aux', '-l'],
+            'ps aux',
             stdout = subprocess.PIPE,
             stdin = subprocess.PIPE,
             shell = True
@@ -29,7 +32,7 @@ class FunctionalTestCase(unittest.TestCase):
 
         proc.stdout.close()
         proc.stdin.close()
-        
+        proc.wait()
         matching_processes = 0
         for process in processes:
             process_string = str(process)
@@ -39,6 +42,10 @@ class FunctionalTestCase(unittest.TestCase):
         return matching_processes
 
     def start(self, file_path, args=[]):
+        if self.suppresed_warnings == False:
+            warnings.filterwarnings("ignore", category=ResourceWarning)
+            self.suppresed_warnings = True
+
         program_path = os.path.join(self.dir_project_root, 'blue-log-viewer1.py')
         proc = subprocess.Popen(
             ['python3', program_path, file_path] + args,
