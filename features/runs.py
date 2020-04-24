@@ -11,8 +11,7 @@ class TestFeatures(FunctionalTestCase):
 
     """ Rule: There shouldn't be any running processes on quit """
     def test_no_leftover_processes(self):
-        """
-            Given a log file
+        """ Given a log file
             When I load the file
             And then close the program
             Then there should be no leftover processes
@@ -45,12 +44,12 @@ class TestFeatures(FunctionalTestCase):
     """ Rule: the user can see logs in realtime """
 
     def test_shows_values_and_add(self):
-        """
-            Given a log file with contents
+        """ Given a log file with contents
             When the file is loaded
             Then the contents should be visibile
             And when lines are added they should also be visibile
         """
+
         fixture_path = os.path.join(self.dir_project_root, 'fixtures', 'simple1.log')
         fixture_temp_path = os.path.join(self.fixture_temp_dir, 'simple.log')
 
@@ -130,25 +129,25 @@ class TestFeatures(FunctionalTestCase):
         )
 
 
+
     """ Rule: new lines are shown in colours """
 
-    def test_shows_colors(self):
-        data_calls = [{
-            'stylesheet' : 'fixtures/QTDark.stylesheet',
-            'color'      : '#002864'
-        },
-        {
-            'stylesheet' : 'fixtures/QTLight.stylesheet',
-            'color'      : '#c8dcff'
-        }]
+    """ Given a themed desktop
+        And a log file with contents
+        When the file is loaded
+        Then the existing contents should not be highlighted
+        And when lines are added they should be highlighted 
+        And the highlighting should be the first colour mathing the theme
+    """
 
-        for data in data_calls:
-            self.executer_shows_colors(data['stylesheet'], data['color'])
-            self.tearDown()
+    def test_shows_colors_dark(self):
+        self.executer_shows_colors('fixtures/QTDark.stylesheet', '#002864')
+
+    def test_shows_colors_light(self):
+        self.executer_shows_colors('fixtures/QTLight.stylesheet', '#c8dcff')
 
     def executer_shows_colors(self, stylesheet, color):
-        """
-            Given a themed desktop
+        """ Given a themed desktop
             And a log file with contents
             When the file is loaded
             Then the existing contents should not be highlighted
@@ -219,6 +218,7 @@ class TestFeatures(FunctionalTestCase):
                 )'
             )
         )
+
 
 if __name__ == '__main__':
     unittest.main()
