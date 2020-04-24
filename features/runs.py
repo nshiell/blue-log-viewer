@@ -1,10 +1,5 @@
-import unittest
-from pprint import pprint
-
-import os, time
-import shutil
-
-from functional import FunctionalTestCase
+import unittest, os, time, shutil
+from functional_test_base import FunctionalTestCase
 
 class TestFeatures(FunctionalTestCase):
     """ Feature: Users can tail logs """
