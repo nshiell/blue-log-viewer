@@ -148,6 +148,7 @@ class TestFeatures(FunctionalTestCase):
             Then the existing contents should not be highlighted
             And when lines are added they should be highlighted in the first colour mathing the theme
         """
+
         fixture_path = os.path.join(self.dir_project_root, 'fixtures', 'simple1.log')
         fixture_temp_path = os.path.join(self.fixture_temp_dir, 'simple.log')
 
@@ -214,6 +215,53 @@ class TestFeatures(FunctionalTestCase):
             )
         )
 
+
+    """ Rule: The colour can be changed """
+    def test_change_colour(self):
+        """ Given a log file
+            When I load the file
+            And add a few new lines into the log
+            Then When I click to change colours
+            I should see new lines in the second colour
+        """
+
+        fixture_path = os.path.join(self.dir_project_root, 'fixtures', 'simple1.log')
+        fixture_temp_path = os.path.join(self.fixture_temp_dir, 'simple.log')
+
+        self.make_fixture_temp_dir()
+        shutil.copy(fixture_path, fixture_temp_path)
+
+        self.start(fixture_temp_path, ['-stylesheet', 'fixtures/QTLight.stylesheet'])
+
+        myfile = open(fixture_temp_path, "a")
+        myfile.write("nXXX\n")
+        myfile.close()
+
+        time.sleep(.3)
+
+        self.assertEqual(
+            '#c8dcff',
+            self.exec_in_app(
+                'self.main_window.table_view.table_model.index(3, 0).data(Qt.BackgroundRole).name()'
+            )
+        )
+
+        self.exec_in_app(
+            'self.main_window.findChild(QPushButton, "color").click()'
+        )
+
+        myfile = open(fixture_temp_path, "a")
+        myfile.write("YYY\n")
+        myfile.close()
+
+        time.sleep(.3)
+
+        self.assertEqual(
+            '#ffd2aa',
+            self.exec_in_app(
+                'self.main_window.table_view.table_model.index(4, 0).data(Qt.BackgroundRole).name()'
+            )
+        )
 
 if __name__ == '__main__':
     unittest.main()

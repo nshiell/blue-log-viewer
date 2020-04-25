@@ -223,7 +223,9 @@ class LineCollection:
 
     def add_line(self, parsed_line):
         if self.color_list:
-            self._line_colors[len(self._parsed_lines)] = self.color_list[0]
+            self._line_colors[len(self._parsed_lines)] = self.color_list[
+                self.current_new_color_index]
+
         self._parsed_lines.append(parsed_line)
 
     @property

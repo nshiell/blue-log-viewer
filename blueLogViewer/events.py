@@ -49,8 +49,7 @@ class EventsBinder:
     def bind(self, window, w):
         #self.window_shown()
         w(QPushButton, 'color').clicked.connect(lambda:
-            self.thingy()
-            #self.window_color_changer.change_and_update_ui()
+            self.window_color_changer.change_and_update_ui()
         )
 
         return None
