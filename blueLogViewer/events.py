@@ -33,6 +33,7 @@ class EventsBinder:
             w(QPushButton, 'color')
         )
 
+        window.table_view.verticalScrollBar().setDisabled(True)
         self.bind(window, w)
         self.loop_tail()
 
@@ -41,32 +42,27 @@ class EventsBinder:
         self.timer = QTimer()
 
         self.timer.timeout.connect(lambda:
-            self.window.table_view.scrollToBottom()
+            self.scroll_to_bottom_if_needed()
         )
     
-        self.timer.start(10000)
+        self.timer.start(10)
+
+    def scroll_to_bottom_if_needed(self):
+        if self.window.table_view.table_model.keep_scroll_to_bottom:
+            self.window.table_view.scrollToBottom()
 
     def bind(self, window, w):
-        #self.window_shown()
         w(QPushButton, 'color').clicked.connect(lambda:
             self.window_color_changer.change_and_update_ui()
         )
 
-        return None
         w(QCheckBox, 'tail').clicked.connect(lambda:
             window.table_view.verticalScrollBar().setDisabled(
-                table_model.toggle_tail()
+                self.window.table_view.table_model.toggle_tail()
             )
         )
 
-        w(QTableView).doubleClicked.connect(lambda modeIndex:
-            Line_QMessageBox(table_model.header)
-                .set_line(
-                    table_model.parsed_lines[modeIndex.row()],
-                    modeIndex.row()
-                )
-                .exec_()
-        )
+        w(QTableView).doubleClicked.connect(window.show_line_message_box)
 
     def window_shown(self):
         self.window.table_view.table_model.is_dark = self.window.is_dark
@@ -79,6 +75,7 @@ class EventsBinder:
         """
         self.log_file.tail_kill()
         os._exit(0)
+
 
 class ColorChanger:
     table_model = None

@@ -114,7 +114,6 @@ class LineCollectionBroker():
         self.tail_thread.start()
     
     def new_line(self, line):
-        print('asd')
         self.line_collection.add_line(self._line_parser.parse(line))
         self.table_model.update_emit()
 
@@ -133,12 +132,17 @@ class TailThread(QThread):
 
 
 class LogTableModel(QAbstractTableModel):
-    """Don't change these method names"""
+    """ Don't change these method names """
+    keep_scroll_to_bottom = True
     _line_collection = None
 
     def __init__(self, parent, line_collection, *args):
         self._line_collection = line_collection
         return super().__init__(parent, *args)
+
+    def toggle_tail(self):
+        self.keep_scroll_to_bottom = not self.keep_scroll_to_bottom
+        return self.keep_scroll_to_bottom
 
     def update_emit(self):
         """
@@ -175,6 +179,10 @@ class LogTableModel(QAbstractTableModel):
             return self._line_collection.get_header(col)
 
         return None
+
+    # @todo implment!!!!
+    def get_line(self, index):
+        pass
 
     @property
     def is_dark(self):
