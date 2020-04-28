@@ -43,3 +43,20 @@ ModuleNotFoundError: No module named 'PyQt5'
 ```brew install pyqt5```
 
 ...then try again.
+
+
+_______________________________________________________
+
+## To test
+This application has some Selenium style functional tests.
+You can see them by looking in `/features/runs.py` and looking at the [Cucumber](https://cucumber.io/docs/gherkin/reference/) in the comments.
+
+They use Python's native [testing](https://docs.python.org/3/library/unittest.html) as a test harness for running these tests.
+
+To run them do the following:
+
+  1. Edit /blue-log-viewer.py, find the line `if False` and flip it to true to enable testing (make sure you turn it back to false for production).
+
+  2. Make sure localhost port **8032** is available
+
+  3. run `python3 features/runs.py`
