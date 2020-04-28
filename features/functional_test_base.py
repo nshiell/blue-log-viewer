@@ -64,7 +64,7 @@ class FunctionalTestCase(unittest.TestCase):
             warnings.filterwarnings("ignore", category=ResourceWarning)
             self.suppresed_warnings = True
 
-        program_path = os.path.join(self.dir_project_root, 'blue-log-viewer1.py')
+        program_path = os.path.join(self.dir_project_root, 'blue-log-viewer.py')
         proc = subprocess.Popen(
             [self.python_exec_prefix, program_path, file_path] + args,
             stdout = subprocess.PIPE,
