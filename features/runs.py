@@ -217,7 +217,7 @@ class TestFeatures(FunctionalTestCase):
 
 
     """ Rule: The colour can be changed """
-    def test_change_colour(self):
+    def test_change_color(self):
         """ Given a log file
             When I load the file
             And add a few new lines into the log
@@ -262,6 +262,13 @@ class TestFeatures(FunctionalTestCase):
                 'self.main_window.table_view.table_model.index(4, 0).data(Qt.BackgroundRole).name()'
             )
         )
+
+
+    """ Rule: The log file can be held at the bottom """
+    # @todo add testing
+
+    """ Rule: Log lines can be inspected """
+    # @todo add testing
 
 if __name__ == '__main__':
     unittest.main()
