@@ -63,7 +63,14 @@ class EventsBinder:
         )
 
         self.window.table_view.table_model.view = w(QTableView)
-        w(QTableView).doubleClicked.connect(window.show_line_message_box)
+        w(QTableView).doubleClicked.connect(self.line_window_show)
+
+    def line_window_show(self, modeIndex):
+        self.window.show_line_message_box(
+            self.window.table_view.table_model.get_headers(),
+            self.window.table_view.table_model.get_row(modeIndex.row()),
+            modeIndex.row()
+        )
 
     def window_shown(self):
         self.window.table_view.table_model.is_dark = self.window.is_dark

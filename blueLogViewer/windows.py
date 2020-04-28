@@ -8,6 +8,39 @@ import os
 _default_path = '/var/log'
 
 
+
+class Line_QMessageBox(QMessageBox):
+    """
+    Show a QT dialog box with a textarea with the log
+    """
+    bullet = None
+    headers = None
+
+    def __init__(self, headers):
+        super().__init__()
+        self.headers = headers
+
+    def set_line(self, parsed_line, row_no):
+        """
+        Set the parsed line
+        """
+        self.setIcon(QMessageBox.Information)
+        self.setText("Information about the item")
+        from pprint import pprint
+        text = ''
+        for field in self.headers:
+            if parsed_line[field]:
+                text+= field + '\n' + parsed_line[field]
+        self.setDetailedText(text)
+        self.setInformativeText(text[:100])
+        self.setWindowTitle('Line %d Details' % int(int(row_no) + 1))
+
+        self.setStandardButtons(QMessageBox.Cancel)
+
+        return self
+
+
+
 def _show_file_path_error(path, reason):
     box = QMessageBox()
     box.setWindowTitle('Error - Blue Log Viewer')
@@ -163,3 +196,7 @@ class QMainWindowBlueLogViewer(QMainWindow):
         """
         event.accept()
         self.closed.emit()
+
+    def show_line_message_box(self, headers, parsed_line, row_no):
+        #@todo implement
+        Line_QMessageBox(headers).set_line(parsed_line, row_no).exec_()

@@ -157,6 +157,12 @@ class LogTableModel(QAbstractTableModel):
         )
         self.layoutChanged.emit()
 
+    def get_row(self, line_no):
+        return self._line_collection.get_line(line_no)
+
+    def get_headers(self):
+        return self._line_collection.get_headers()
+
     def rowCount(self, parent):
         return self._line_collection.get_lines_count()
 
@@ -239,6 +245,9 @@ class LineCollection:
 
     def get_headers_count(self):
         return len(self._line_format.headers)
+
+    def get_headers(self):
+        return self._line_format.headers
 
     def get_header(self, index):
         return self._line_format.headers[index]
