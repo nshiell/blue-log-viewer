@@ -135,6 +135,7 @@ class LogTableModel(QAbstractTableModel):
     """ Don't change these method names """
     keep_scroll_to_bottom = True
     _line_collection = None
+    _table_row_span_setter = None
 
     def __init__(self, parent, line_collection, *args):
         self._line_collection = line_collection
@@ -161,12 +162,33 @@ class LogTableModel(QAbstractTableModel):
     def columnCount(self, parent):
         return self._line_collection.get_headers_count()
 
+    # @todo remove child reference from this class!
+    view = None
+
+    table_row_span_setter = None
+
     def data(self, index, role):
         """
         Allows overwriting things like style
         """
         if not index.isValid():
             return None
+
+
+        # @todo rewrite this functionality
+        # Needs to be lazy-loaded as the table view doesn't exist when
+        # LogTableModel is instantiated
+        if self.table_row_span_setter == None and self.view:
+            self.table_row_span_setter = TableRowSpanSetter(
+                self._line_collection.get_fields(),
+                self.view
+            )
+
+        if self.table_row_span_setter:
+            self.table_row_span_setter.set_span_for_row(
+                index,
+                self._line_collection.get_line(index.row())
+            )
 
         if role == Qt.DisplayRole:
             return self._line_collection.get_value(index.column(), index.row())
@@ -179,10 +201,6 @@ class LogTableModel(QAbstractTableModel):
             return self._line_collection.get_header(col)
 
         return None
-
-    # @todo implment!!!!
-    def get_line(self, index):
-        pass
 
     @property
     def is_dark(self):
@@ -221,6 +239,9 @@ class LineCollection:
     def get_lines_count(self):
         return len(self._parsed_lines)
 
+    def get_line(self, row):
+        return self._parsed_lines[row]
+
     def get_value(self, column, row):
         field = self._line_format.fields[column]
         return self._parsed_lines[row][field]
@@ -235,6 +256,9 @@ class LineCollection:
                 self.current_new_color_index]
 
         self._parsed_lines.append(parsed_line)
+
+    def get_fields(self):
+        return self._line_format.fields
 
     @property
     def is_dark(self):
@@ -298,3 +322,30 @@ class ColorList:
     @property
     def len(self):
         return len(self.color_list)
+
+class TableRowSpanSetter:
+    """
+    Represents a service which given a table view and a line format
+    Will colspan a row if the line's data fails regex match
+    i.e. all the data is in one cell
+    """
+
+    # So we ca make a visibile UI change
+    table_view = None
+
+    # best count out fields here, it's quicker doing it once
+    column_count = None
+
+    # best work out the second field name once, it's quicker doing it once
+    second_field_name = None
+
+    def __init__(self, fields, table_view):
+        self.table_view = table_view
+        self.column_count = len(fields)
+
+        if self.column_count > 1:
+            self.second_field_name = fields[1].replace(' ', '_')
+
+    def set_span_for_row(self, index, data):
+        if self.second_field_name and index.column() == 0 and data[self.second_field_name] == None:
+            self.table_view.setSpan(index.row(), 0, 1, self.column_count)

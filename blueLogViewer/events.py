@@ -23,9 +23,6 @@ class EventsBinder:
         if not window.table_view:
             raise TypeError('Call window.setup() before binding events')
 
-        window.closed.connect(self.handle_close)
-        window.is_now_visibile.connect(self.window_shown)
-
         w = window.findChild
         self.window_color_changer = ColorChanger(
             window.table_view.table_model,
@@ -52,6 +49,9 @@ class EventsBinder:
             self.window.table_view.scrollToBottom()
 
     def bind(self, window, w):
+        window.closed.connect(self.handle_close)
+        window.is_now_visibile.connect(self.window_shown)
+
         w(QPushButton, 'color').clicked.connect(lambda:
             self.window_color_changer.change_and_update_ui()
         )
@@ -62,6 +62,7 @@ class EventsBinder:
             )
         )
 
+        self.window.table_view.table_model.view = w(QTableView)
         w(QTableView).doubleClicked.connect(window.show_line_message_box)
 
     def window_shown(self):
