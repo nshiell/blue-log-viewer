@@ -1,5 +1,6 @@
 # Copyright (C) 2019  Nicholas Shiell
-from PyQt5.QtCore import Qt, QSize, QAbstractTableModel
+from PyQt5.QtCore import Qt, QSize, QAbstractTableModel, QVariant
+from PyQt5.QtGui import QBrush
 from blueLogViewer.line_format import Factory as LineFormatFactory
 
 import re, io, subprocess, select, time
@@ -190,11 +191,17 @@ class LogTableModel(QAbstractTableModel):
                 self._line_collection.get_line(index.row())
             )
 
+        value = self._line_collection.get_value(index.column(), index.row())
+
         if role == Qt.DisplayRole:
-            return self._line_collection.get_value(index.column(), index.row())
+            return value
 
         if role == Qt.BackgroundRole:
             return self._line_collection.get_line_color(index.row())
+
+        if value != None and role == Qt.ForegroundRole and len(value) > 50:
+            color = QColor(128, 128, 128)
+            return QVariant(QBrush(color))
 
     def headerData(self, col, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
