@@ -29,8 +29,9 @@ class Line_QMessageBox(QMessageBox):
         from pprint import pprint
         text = ''
         for field in self.headers:
-            if parsed_line[field]:
-                text+= field + '\n' + parsed_line[field]
+            field_key = field.replace(' ', '_')
+            if parsed_line[field_key]:
+                text+= field + '\n' + parsed_line[field_key]
         self.setDetailedText(text)
         self.setInformativeText(text[:100])
         self.setWindowTitle('Line %d Details' % int(int(row_no) + 1))
