@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+cd "$(dirname "$0")"
 # Create Build Directory
 mkdir -p build && cd build
 
@@ -24,6 +25,3 @@ export PIP_REQUIREMENTS='pyqt5'
     --plugin conda \
     --custom-apprun ../src/AppRun.sh \
     --output appimage
-
-# Prepare Script to Sign
-cp ../src/signAppImage.sh .
