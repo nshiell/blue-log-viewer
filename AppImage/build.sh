@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 cd "$(dirname "$0")"
+
 # Create Build Directory
 mkdir -p build && cd build
 
 # Grab AppImageTools
 wget -nc "https://raw.githubusercontent.com/TheAssassin/linuxdeploy-plugin-conda/master/linuxdeploy-plugin-conda.sh"
 wget -nc "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
-wget -nc "https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage"
-chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-conda.sh appimagetool-x86_64.AppImage
+chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-conda.sh
 
 mkdir -p ./AppDir/opt/Densify/
 cp -Rfp ../src/* ./AppDir/opt/Densify/
