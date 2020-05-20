@@ -9,24 +9,7 @@ wget -nc "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuou
 wget -nc "https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage"
 chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-conda.sh appimagetool-x86_64.AppImage
 
-# Generate .desktop
-cat > ../res/densify.desktop <<EOF
-[Desktop Entry]
-Type=Application
-Name=Densify
-GenericName=PDF Compressor
-Comment=GUI Wrapper for Compressing PDFs with GhostScript
-Icon=desktop-icon
-Exec=densify
-Terminal=false
-Categories=Utility;
-EOF
-
-# Install App
-install -D -m 755 ../src/header.png ./AppDir/opt/Densify/header.png
-install -D -m 755 ../src/icon.png ./AppDir/opt/Densify/icon.png
-install -D -m 755 ../src/densify ./AppDir/opt/Densify/densify
-
+mkdir -p ./AppDir/opt/Densify/
 cp -Rfp ../src/* ./AppDir/opt/Densify/
 
 # Set Environment
@@ -36,8 +19,8 @@ export PIP_REQUIREMENTS='pyqt5'
 # Deploy
 ./linuxdeploy-x86_64.AppImage \
    --appdir AppDir \
-    -i ../res/desktop-icon.png \
-    -d ../res/densify.desktop \
+    -i ../../artwork/blue-log-viewer.png \
+    -d ../../artwork/blue-log-viewer.desktop \
     --plugin conda \
     --custom-apprun ../src/AppRun.sh \
     --output appimage
