@@ -31,8 +31,7 @@ cp -Rfp ../src/* ./AppDir/opt/Densify/
 
 # Set Environment
 export CONDA_CHANNELS='local;conda-forge'
-export PIP_REQUIREMENTS='PyGObject pathlib pyqt5'
-#export CONDA_PACKAGES="pyqt=5.9.2"
+export PIP_REQUIREMENTS='pyqt5'
 
 # Deploy
 ./linuxdeploy-x86_64.AppImage \
