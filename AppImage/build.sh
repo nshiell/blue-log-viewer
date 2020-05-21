@@ -20,8 +20,8 @@ export PIP_REQUIREMENTS='pyqt5'
 # Deploy
 ./linuxdeploy-x86_64.AppImage \
    --appdir AppDir \
-    -i ../../artwork/blue-log-viewer.png \
-    -d ../../artwork/blue-log-viewer.desktop \
+    -i ../res/blue-log-viewer.png \
+    -d ../res/blue-log-viewer.desktop \
     --plugin conda \
     --custom-apprun ../src/AppRun.sh \
     --output appimage
