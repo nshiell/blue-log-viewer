@@ -1,6 +1,7 @@
 __pycache__
 *.log
 *.AppImage
-/build
 /tools/linuxdeploy-plugin-conda.sh
 /tools/app-image-creator/buildset
+/tools/app-image-creator/AppDir
+/tools/app-image-creator/_temp_home
