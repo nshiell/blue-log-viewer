@@ -2,3 +2,5 @@ __pycache__
 *.log
 *.AppImage
 /build
+/tools/linuxdeploy-plugin-conda.sh
+/tools/app-image-creator/buildset

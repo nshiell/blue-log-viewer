@@ -3,14 +3,17 @@
 cd "$(dirname "$0")"
 
 #
-# Updates the latest app into src and res directory
+# Updates the latest app into src and artwork directories
 #
 
-cp -Rfp ../blue-log-viewer.py ./src
-cp -Rfp ../test/ ./src
-cp -Rfp ../blueLogViewer/ ./src
+mkdir -p ./buildset/artwork
+cp -Rp ./src ./buildset/src
 
-mkdir -p res
+cp -Rfp ../../blue-log-viewer.py ./buildset/src
+cp -Rfp ../../test/ ./buildset/src
+cp -Rfp ../../blueLogViewer/ ./buildset/src
 
-cp ../artwork/blue-log-viewer.png ./res
-cp ../artwork/blue-log-viewer.desktop ./res
+mkdir -p ./buildset/artwork
+
+cp ../../artwork/blue-log-viewer.png ./buildset/artwork
+cp ../../artwork/blue-log-viewer.desktop ./buildset/artwork
