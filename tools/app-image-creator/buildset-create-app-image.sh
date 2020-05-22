@@ -13,9 +13,9 @@ wget -nc "https://raw.githubusercontent.com/TheAssassin/linuxdeploy-plugin-conda
 wget -nc "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
 chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-conda.sh
 
-mkdir -p ./AppDir/opt/Densify
-cp -Rfp ./buildset/src/* ./AppDir/opt/Densify
-rm ./AppDir/opt/Densify/AppRun.sh
+mkdir -p ./AppDir/opt/blue-log-viewer
+cp -Rfp ./buildset/src/* ./AppDir/opt/blue-log-viewer
+rm ./AppDir/opt/blue-log-viewer/AppRun.sh
 
 # Set Environment
 export CONDA_CHANNELS='local;conda-forge'
