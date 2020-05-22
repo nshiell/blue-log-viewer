@@ -1,2 +1,8 @@
 __pycache__
 *.log
+*.AppImage
+/tools/linuxdeploy-plugin-conda.sh
+/tools/app-image-creator/buildset
+/tools/app-image-creator/AppDir
+/tools/app-image-creator/_temp_home
+/artwork/blue-log-viewer.png

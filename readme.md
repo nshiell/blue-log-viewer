@@ -49,14 +49,29 @@ _______________________________________________________
 
 ## To test
 This application has some Selenium style functional tests.
-You can see them by looking in `/features/runs.py` and looking at the [Cucumber](https://cucumber.io/docs/gherkin/reference/) in the comments.
+You can see them by looking in `./features/runs.py` and looking at the [Cucumber](https://cucumber.io/docs/gherkin/reference/) in the comments.
 
 They use Python's native [testing](https://docs.python.org/3/library/unittest.html) as a test harness for running these tests.
 
 To run them do the following:
 
-  1. Edit /blue-log-viewer.py, find the line `if False` and flip it to true to enable testing (make sure you turn it back to false for production).
+  1. Edit ./blue-log-viewer.py, find the line `if False` and flip it to true to enable testing (make sure you turn it back to false for production).
 
   2. Make sure localhost port **8032** is available
 
   3. run `python3 features/runs.py`
+
+_______________________________________________________
+
+## AppImage
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/73/App-image-logo.svg" style="float: right; width: 200px">
+
+This whole program can be compiled into an AppImage!
+* To run the build execute: `./tools/app-image-create.sh`
+
+* The AppImage doesn't currently have a signed key
+
+* Nor does it have an update mechanism *yet*
+
+* Nor doe's it know how to build a png icon from the svg so `./artwork/blue-log-viewer.png` is missing
