@@ -1,0 +1,16 @@
+[Desktop Entry]
+Version=1.0
+Name=Blue Log Viewer
+Comment=View log files
+Comment[de]=Protokolldateien anzeigen
+Comment[fr]=Afficher les fichiers journaux
+Comment[ru]=Просмотр файлов журнала
+Comment[hi]=लॉग फ़ाइलें देखें
+Comment[he]=הצגת קבצי יומן
+Comment[ar]=عرض ملفات السجل
+Exec=blue-log-viewer
+Terminal=false
+Type=Application
+Icon=blue-log-viewer
+Categories=System;Utility;Development;
+StartupNotify=true
