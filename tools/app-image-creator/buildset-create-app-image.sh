@@ -30,6 +30,9 @@ export PIP_REQUIREMENTS='pyqt5'
     --custom-apprun ./buildset/src/AppRun.sh \
     --output appimage
 
+rm -Rf ./_temp_home
+rm -Rf ./AppDir
+
 mv Blue*.AppImage ../../release
 
 cd ../../release
