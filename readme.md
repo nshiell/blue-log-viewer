@@ -4,6 +4,8 @@
 
 *This program is not related to Apache or the Apache Software Foundation in any way*
 
+![Blue Log Viewer Icon](https://nshiell.com/img/blue-log-viewer/blue-log-viewer-icon-256.png)
+
 ## To Run on GNU/Linux:
 `./blue-log-viewer.py /var/log/apache2/error.log`
 
@@ -65,7 +67,7 @@ _______________________________________________________
 
 ## AppImage
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/7/73/App-image-logo.svg" style="float: right; width: 200px">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/73/App-image-logo.svg" align="right" style="float: right; width: 200px">
 
 This whole program can be compiled into an AppImage!
 * To run the build execute: `./tools/app-image-create.sh`
