@@ -4,7 +4,10 @@
 
 *This program is not related to Apache or the Apache Software Foundation in any way*
 
-![Blue Log Viewer Icon](https://nshiell.com/img/blue-log-viewer/blue-log-viewer-icon-256.png)
+<p align="center" style="text-align: center">
+	<img src="https://nshiell.com/img/blue-log-viewer/blue-log-viewer-icon-256.png" alt="Blue Log Viewer Icon">
+    <br>
+</p>
 
 ## To Run on GNU/Linux:
 `./blue-log-viewer.py /var/log/apache2/error.log`
