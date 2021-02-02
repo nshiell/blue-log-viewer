@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import unittest, os, time, shutil
 from functional_test_base import FunctionalTestCase
 
@@ -155,17 +157,17 @@ class TestFeatures(FunctionalTestCase):
         self.make_fixture_temp_dir()
         shutil.copy(fixture_path, fixture_temp_path)
         self.start(fixture_temp_path, ['-stylesheet', stylesheet])
-        
+
         self.assertIsNone(self.exec_in_app(
-            'self.main_window.table_view.table_model.index(0, 0).data(Qt.BackgroundRole).name()'
+            'self.main_window.table_view.table_model.index(0, 0).data(Qt.BackgroundRole)'
         ))
 
         self.assertIsNone(self.exec_in_app(
-            'self.main_window.table_view.table_model.index(1, 0).data(Qt.BackgroundRole).name()'
+            'self.main_window.table_view.table_model.index(1, 0).data(Qt.BackgroundRole)'
         ))
 
         self.assertIsNone(self.exec_in_app(
-            'self.main_window.table_view.table_model.index(2, 0).data(Qt.BackgroundRole).name()'
+            'self.main_window.table_view.table_model.index(2, 0).data(Qt.BackgroundRole)'
         ))
 
         self.assertEqual(
