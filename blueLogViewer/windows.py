@@ -1,7 +1,7 @@
 # Copyright (C) 2019  Nicholas Shiell
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt, QSize, pyqtSignal
-from PyQt5.QtGui import QIcon, QPalette
+from PyQt5.QtGui import QIcon, QPalette, QIcon
 
 import os
 
@@ -70,6 +70,23 @@ def get_valid_path(main_window, path):
         os._exit(1)
 
     return path
+
+
+def app_icon_setter(app):
+    """
+    Sets the application icon
+    Do it on the app not the main window as the window might not be shown
+    """
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    dir_artwork = os.path.realpath(os.path.join(dir_path, '..', 'artwork'))
+
+    icon_path = os.path.join(dir_artwork, 'blue-log-viewer.png')
+
+    if os.path.isfile(icon_path):
+        app.setWindowIcon(QIcon(icon_path))
+    else:
+        print('Icon file not found: ' + icon_path)
 
 
 class QTableViewLog(QTableView):

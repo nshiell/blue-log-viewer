@@ -20,7 +20,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 from argparse import ArgumentParser
-from blueLogViewer.windows import QMainWindowBlueLogViewer, get_valid_path
+from blueLogViewer.windows import QMainWindowBlueLogViewer, get_valid_path, app_icon_setter
 from blueLogViewer import EventsBinder
 from blueLogViewer import LineCollection, LineCollectionBroker
 
@@ -62,6 +62,8 @@ if __name__ == '__main__':
     )
 
     app = QApplication(sys.argv)
+    app_icon_setter(app)
+
     args = parser.parse_args()
 
     # We need a main window before we show anything
