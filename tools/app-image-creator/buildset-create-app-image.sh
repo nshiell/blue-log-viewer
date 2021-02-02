@@ -13,8 +13,9 @@ wget -nc "https://raw.githubusercontent.com/TheAssassin/linuxdeploy-plugin-conda
 wget -nc "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
 chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-conda.sh
 
-mkdir -p ./AppDir/opt/blue-log-viewer
+mkdir -p ./AppDir/opt/blue-log-viewer/artwork
 cp -Rfp ./buildset/src/* ./AppDir/opt/blue-log-viewer
+cp ./buildset/artwork/blue-log-viewer.png ./AppDir/opt/blue-log-viewer/artwork
 rm ./AppDir/opt/blue-log-viewer/AppRun.sh
 
 # Set Environment
