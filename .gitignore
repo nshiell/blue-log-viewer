@@ -6,4 +6,5 @@ __pycache__
 /tools/app-image-creator/AppDir
 /tools/app-image-creator/_temp_home
 /tools/app-image-creator/linuxdeploy-plugin-conda.sh
+/tools/svg-to-png-using-chromium/
 /artwork/blue-log-viewer.png
