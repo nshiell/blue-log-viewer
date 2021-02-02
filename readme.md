@@ -84,5 +84,5 @@ This whole program can be compiled into an AppImage!
 
 \* Running the build script will use Docker to start a svg to png converter for making the icon
 
-To bypass icon creation run ./tools/app-image-create.sh
+To bypass icon creation run `./tools/app-image-create.sh`
 *(Run ./icon-svg-to-png.sh to just build the png)*
