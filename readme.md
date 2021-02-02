@@ -73,10 +73,15 @@ _______________________________________________________
 <img src="https://upload.wikimedia.org/wikipedia/commons/7/73/App-image-logo.svg" align="right" style="float: right; width: 200px">
 
 This whole program can be compiled into an AppImage!
-* To run the build execute: `./tools/app-image-create.sh`
+* To run the build execute: `prepair-artwork-and-create-app-image.sh` *
 
 * The AppImage doesn't currently have a signed key
 
 * Nor does it have an update mechanism *yet*
 
-* Nor doe's it know how to build a png icon from the svg so `./artwork/blue-log-viewer.png` is missing
+* Nor does it know how to build a png icon from the svg so `./artwork/blue-log-viewer.png` is missing
+
+ * Running the build script will use Docker to start a svg to png converter for making the icon
+
+To bypass icon creation run ./tools/app-image-create.sh
+(Run ./icon-svg-to-png.sh to just build the png)
