@@ -10,7 +10,6 @@ mkdir -p ./buildset/artwork
 cp -Rp ./src ./buildset/src
 
 cp -Rfp ../../blue-log-viewer.py ./buildset/src
-cp -Rfp ../../test/ ./buildset/src
 cp -Rfp ../../blueLogViewer/ ./buildset/src
 
 mkdir -p ./buildset/artwork
