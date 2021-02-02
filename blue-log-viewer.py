@@ -23,7 +23,6 @@ from argparse import ArgumentParser
 from blueLogViewer.windows import QMainWindowBlueLogViewer, get_valid_path
 from blueLogViewer import EventsBinder
 from blueLogViewer import LineCollection, LineCollectionBroker
-from test import server
 
 import signal
 
@@ -84,6 +83,7 @@ if __name__ == '__main__':
 
     # Flip this to true to enable functional testing
     if False:
+        from test import server
         worker = Worker(main_window)
         threadpool = QThreadPool()
         threadpool.start(worker)
